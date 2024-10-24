@@ -79,10 +79,11 @@ export const signin = async (req, res, next) => {
     const token = jwt.sign(
       {
         id: validUser._id,
+        name: validUser.username,
         isAdmin: validUser.isAdmin,
       },
-      process.env.JWT_SECRET
-      //,{expiresIn:''}
+      process.env.JWT_SECRET,
+      { expiresIn: "30d" }
     );
 
     const { password: pass, ...others } = validUser._doc;
@@ -133,14 +134,12 @@ export const google = async (req, res, next) => {
         process.env.JWT_SECRET
       );
       const { password, ...rest } = newUser._doc;
-      return (
-        res
-          .status(200)
-          // .cookie("access_token", token, {
-          //   httpOnly: true,
-          // })
-          .json(token)
-      );
+      return res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(token);
     }
   } catch (error) {
     next(error);

@@ -4,16 +4,15 @@ import { initializeApp } from "firebase/app";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-
-//console.log(import.meta.env.VITE_FIREBASE_API_KEY)
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "agricredit-4444.firebaseapp.com",
-  projectId: "agricredit-4444",
-  storageBucket: "agricredit-4444.appspot.com",
-  messagingSenderId: "271052229369",
-  appId: "1:271052229369:web:be2bd6f457e38668453028",
-  measurementId: "G-V3DWEFGP72",
+  apiKey: "AIzaSyBqzX088OPgRzxsM6mUZSGRgg6DOBsjG-E",
+  authDomain: "farmers-assistant-c46d8.firebaseapp.com",
+  projectId: "farmers-assistant-c46d8",
+  storageBucket: "farmers-assistant-c46d8.appspot.com",
+  messagingSenderId: "15171032542",
+  appId: "1:15171032542:web:b65166e78a070a824ff94f",
+  measurementId: "G-G2BHE5025J",
 };
 
 // Initialize Firebase

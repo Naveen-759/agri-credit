@@ -24,7 +24,7 @@ const organicManure = Schema(
       required: true,
     },
     posted_by: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.String,
       ref: UserModel,
     },
   },

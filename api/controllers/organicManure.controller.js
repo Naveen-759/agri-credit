@@ -1,39 +1,44 @@
-import multer from "multer";
 import Manure from "../models/organicManure.model.js";
-import asyncHandler from "express-async-handler";
-import path from "path";
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.resolve("./public/uploads"));
-  },
-  filename: function (req, file, cb) {
-    const filename = `${Date.now()}-${file.originalname}`;
-    cb(null, filename);
-  },
-});
+export const addManure = async (req, res) => {
+  console.log(req.body, req.user);
 
-const upload = multer({ storage: storage });
-
-export const addManure = asyncHandler(
-  upload.single("manureImage"),
-  async (req, res) => {
-    const { manure_type, quantity, address, manure_img, description } =
-      req.body;
+  const { manure_type, quantity, address, manure_img, description } = req.body;
+  try {
     if (!manure_type || !quantity || !address || !manure_img || !description) {
       res.status(400);
       throw new Error("All fields are mandatory");
     }
-    // console.log(req.user);
     const manure = await Manure.create({
       manure_type,
-      quantity,
+      quantity: +quantity,
       address,
-      manure_img: `/uploads/${req.file.filename}`,
+      manure_img,
       description,
-      posted_by: req.user.id,
+      posted_by: String(req.user.name),
     });
     res.json(manure);
     console.log("Added the maure");
+  } catch (error) {
+    console.log(error);
   }
-);
+};
+
+export const getManures = async (req, res) => {
+  try {
+    const manures = await Manure.find({});
+    res.json(manures);
+    console.log(manures);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getByUser = async (req, res) => {
+  try {
+    const manuresByUser = await Manure.find({ posted_by: req.user.name });
+    res.json(manuresByUser);
+  } catch (err) {
+    console.log(err);
+  }
+};

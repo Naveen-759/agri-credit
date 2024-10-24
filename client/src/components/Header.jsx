@@ -122,14 +122,6 @@ export default function Header() {
         >
           About
         </Navbar.Link>
-        {/* <Navbar.Link
-          as={Link}
-          to="/dashboard"
-          active={path === "/dashboard"}
-          className="dark:text-white"
-        >
-          Dashboard
-        </Navbar.Link> */}
         <Navbar.Link
           as={Link}
           to="/agrihelp"
@@ -137,6 +129,22 @@ export default function Header() {
           className="dark:text-white"
         >
           AgriHelp
+        </Navbar.Link>
+        <Navbar.Link
+          as={Link}
+          to="/services"
+          active={path === "/services"}
+          className="dark:text-white"
+        >
+          AgriServices
+        </Navbar.Link>
+        <Navbar.Link
+          as={Link}
+          to="/dashboard"
+          active={path === "/dashboard"}
+          className="dark:text-white"
+        >
+          Dashboard
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>

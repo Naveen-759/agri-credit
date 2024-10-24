@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaSeedling, FaSyringe, FaHeartbeat, FaCrop } from "react-icons/fa";
-import { GiSprout } from "react-icons/gi";
+import { FaSeedling, FaSyringe, FaHeartbeat } from "react-icons/fa";
+import { GiSprout, GiFertilizerBag } from "react-icons/gi";
 import CropList from "../components/CropList";
 import FertiList from "../components/FertiList";
 import Disease from "../components/DIseases";
-import Pesticides from "../components/Pesticides";
-import OrganicManure from "../components/OrganicManure";
 
 const AgriHelp = () => {
   const location = useLocation();
@@ -48,7 +46,7 @@ const AgriHelp = () => {
                 to="/agrihelp?tab=fertilist"
                 className="flex flex-col items-center"
               >
-                <GiSprout className="h-10 w-10 text-[#4c8f2e] mb-3" />
+                <GiFertilizerBag className="h-10 w-10 text-[#4c8f2e] mb-3" />
                 <div className="container2 text-[#4c8f2e] text-xl font-bold">
                   Fertilizers
                 </div>
@@ -92,26 +90,6 @@ const AgriHelp = () => {
                 </div>
               </Link>
             </div>
-            {/* Manure Card */}
-            <div className="cont4 bg-green-100 bg-opacity-60 backdrop-blur-md rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 flex flex-col items-center">
-              <Link
-                to="/agrihelp?tab=manures"
-                className="flex flex-col items-center"
-              >
-                <img
-                  src="https://w7.pngwing.com/pngs/178/852/png-transparent-agriculture-fertilisers-nutrient-health-marketing-seeds-miscellaneous-industry-trade-thumbnail.png"
-                  alt=""
-                  className="h-20 w-20 mb-3"
-                ></img>
-                <div className="container4 text-[#422006] text-xl font-bold">
-                  Organic Manures
-                </div>
-                <div className="disc text-green-700 mt-2 text-center">
-                  Manure Management feature to track, apply, and exchange
-                  various types of manure for optimal crop health
-                </div>
-              </Link>
-            </div>
           </div>
         </div>
       )}
@@ -122,7 +100,7 @@ const AgriHelp = () => {
             data-drawer-toggle="default-sidebar"
             aria-controls="default-sidebar"
             type="button"
-            className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-green-500 rounded-lg sm:hidden hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-200 dark:text-green-400 dark:hover:bg-green-700 dark:focus:ring-green-600"
+            className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-green-500 rounded-lg  hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-200 dark:text-green-400 dark:hover:bg-green-700 dark:focus:ring-green-600"
             onClick={() => setSidebar(true)}
           >
             <span className="sr-only">Open sidebar</span>
@@ -145,13 +123,13 @@ const AgriHelp = () => {
             id="default-sidebar"
             className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-${
               sidebar ? "0" : "full"
-            } sm:translate-x-0`}
+            } `}
             aria-label="Sidebar"
           >
             <div className="h-full px-3 py-20 overflow-y-auto bg-green-50 dark:bg-green-800">
               <div
                 onClick={() => setSidebar(false)}
-                className="flex float-end bg-green-800 rounded-full p-2 text-white sm:hidden"
+                className="flex float-end bg-green-800 rounded-full p-2 text-white cursor-pointer "
               >
                 X
               </div>
@@ -236,21 +214,7 @@ const AgriHelp = () => {
                     </span>
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="/agrihelp?tab=manures"
-                    className={`flex items-center p-2 text-green-900 rounded-lg dark:text-white ${
-                      tab === "pesticides"
-                        ? "bg-green-100 dark:bg-green-700"
-                        : ""
-                    } hover:bg-green-100 dark:hover:bg-green-700 group`}
-                  >
-                    <FaSyringe className="h-5 w-5  text-[#007bff] transition duration-75 dark:text-[#007bff] group-hover:text-green-900 dark:group-hover:text-white " />
-                    <span className="flex-1 ms-3 whitespace-nowrap">
-                      Manure
-                    </span>
-                  </Link>
-                </li>
+
                 {/* <li>
                   <Link
                     to="#"
@@ -301,12 +265,17 @@ const AgriHelp = () => {
             </div>
           </aside>
 
-          <div className="p-4 sm:ml-64 bg-white dark:bg-black">
+          <div
+            className={
+              sidebar
+                ? "p-4 ml-64 bg-white dark:bg-black"
+                : "p-4  bg-white dark:bg-black"
+            }
+          >
             {tab === "croplist" && <CropList />}
             {tab === "fertilist" && <FertiList />}
             {tab === "diseases" && <Disease />}
             {tab === "pesticides" && <Pesticides />}
-            {tab === "manures" && <OrganicManure />}
             {tab === "dash" && <DashboardComp />}
           </div>
         </>

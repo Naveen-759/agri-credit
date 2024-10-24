@@ -14,10 +14,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import TandC from "./pages/TandC";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AgriHelp from "./pages/AgriHelp";
-import CropList from "./components/CropList";
-import FertiList from "./components/FertiList";
-import Disease from "./components/DIseases";
-import Pesticides from "./components/Pesticides";
+import Services from "./pages/Services";
 
 export default function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -43,6 +40,11 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/agrihelp" element={<AgriHelp />} />
         </Route>
+        <Route element={<PrivateRoute />}>
+          <Route path="/services" element={<Services />} />
+        </Route>
+        {/* <Route element={<PrivateRoute />}>
+        </Route> */}
         {/* <Route path="/croplist" element={<CropList />} />
         <Route path="/fertilist" element={<FertiList />} />
         <Route path="/diseases" element={<Disease />} />

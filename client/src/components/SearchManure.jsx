@@ -1,10 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ManureData from "../data/ManureData";
 
 const SearchManure = () => {
   const [sortType, setSortType] = useState("type");
   const [selectedManure, setSelectedManure] = useState(null); // Holds selected manure
-  const [manureList, setManureList] = useState(ManureData); // Manure list
+  const [manureList, setManureList] = useState(null); // Manure list
+
+  useEffect(() => {
+    getManures();
+  }, []);
+
+  const getManures = async () => {
+    try {
+      const res = await fetch("/api/manures/getmanures", {
+        method: "GET",
+      });
+      const manures = res.json();
+      if (res.ok) {
+        setManureList(manures);
+        console.log(manures);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleSort = (e) => {
     const sortBy = e.target.value;
@@ -126,18 +145,19 @@ const SearchManure = () => {
           </div>
         ) : (
           <ul className="manure-list space-y-2">
-            {manureList.map((manure, index) => (
-              <li
-                key={index}
-                onClick={() => handleManureClick(manure)}
-                className="p-4 bg-green-100 rounded shadow cursor-pointer hover:bg-green-200"
-              >
-                <h4 className="font-bold">{manure.type}</h4>
-                <p>
-                  {manure.quantity} - {manure.description}
-                </p>
-              </li>
-            ))}
+            {manureList &&
+              manureList.map((manure, index) => (
+                <li
+                  key={index}
+                  onClick={() => handleManureClick(manure)}
+                  className="p-4 bg-green-100 rounded shadow cursor-pointer hover:bg-green-200"
+                >
+                  <h4 className="font-bold">{manure.type}</h4>
+                  <p>
+                    {manure.quantity} - {manure.description}
+                  </p>
+                </li>
+              ))}
           </ul>
         )}
       </div>

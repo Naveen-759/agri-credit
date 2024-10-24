@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Typewriter } from "react-simple-typewriter";
+// import imageURL from "../assets/bgimg.jpg";
+import imageURL from "../assets/bg2img.webp";
 
 const Home = () => {
   const user = useSelector((state) => state.user.currentUser);
@@ -36,7 +38,7 @@ const Home = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-white text-green-800 dark:bg-black dark:text-green-100">
+    <div className="relative min-w-full flex items-center justify-center min-h-screen bg-white text-green-800 dark:bg-black dark:text-green-100">
       {/* Background Animation */}
       {/* <motion.div
         className="absolute inset-0 bg-gradient-to-r from-green-100 to-green-200 dark:from-black dark:to-black"
@@ -44,11 +46,16 @@ const Home = () => {
         transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
       ></motion.div> */}
 
-      <div className="relative z-10 flex flex-col items-center justify-center p-2 text-center">
-        <div className="min-h-screen flex flex-col items-center justify-center">
+      <div className="relative z-10 min-w-full flex flex-col items-center justify-center text-center">
+        <div
+          className="relative min-h-screen flex flex-col items-center justify-center bg-cover bg-center min-w-full"
+          style={{
+            backgroundImage: `url(${imageURL})`,
+          }}
+        >
           {/* Header Animation */}
           <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#e76f51] to-[#dda15e] mb-6"
+            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#e75151] to-[#dda15e] mb-6"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: "easeOut" }}
@@ -70,7 +77,7 @@ const Home = () => {
 
           {/* Paragraph Animation */}
           <motion.p
-            className="text-lg md:text-xl mb-8 max-w-md mx-auto"
+            className="text-lg md:text-xl mb-8 max-w-md mx-auto text-yellow-50"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
@@ -110,12 +117,15 @@ const Home = () => {
         </div>
 
         <main className="w-full">
-          <section id="features" className="py-12 md:py-24 lg:py-32">
+          <section
+            id="features"
+            className="py-12 md:py-24 lg:py-32 flex justify-center"
+          >
             <div className="container px-4 md:px-6">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
                 Key Features
               </h2>
-              <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
+              <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3 justify-center">
                 {[
                   {
                     title: "Crop Management",
@@ -175,7 +185,10 @@ const Home = () => {
             </div>
           </section>
 
-          <section id="contact" className="py-12 md:py-24 lg:py-32">
+          <section
+            id="contact"
+            className="py-12 md:py-24 lg:py-32 flex justify-center"
+          >
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
