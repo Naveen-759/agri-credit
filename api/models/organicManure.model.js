@@ -23,6 +23,15 @@ const organicManure = Schema(
       type: String,
       required: true,
     },
+    manure_lat: {
+      type: Number,
+      required: true,
+    },
+    manure_long: {
+      type: Number,
+      required: true,
+    },
+
     posted_by: {
       type: mongoose.Schema.Types.String,
       ref: UserModel,

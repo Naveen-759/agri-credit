@@ -7,6 +7,9 @@ import emailRoutes from "./routes/email.route.js";
 import cropRoutes from "./routes/crop.route.js";
 import fertilizerRoutes from "./routes/fertilizer.route.js";
 import manureRoutes from "./routes/organicManure.route.js";
+import soilRoutes from "./routes/soil.route.js";
+import diseaseRoutes from "./routes/disease.route.js";
+import pesticideRoutes from "./routes/pesticide.route.js";
 
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -46,6 +49,10 @@ app.use("/api/send-email", emailRoutes);
 app.use("/api/crops", cropRoutes);
 app.use("/api/fertilizers", fertilizerRoutes);
 app.use("/api/manures", manureRoutes);
+app.use("/api/diseases", diseaseRoutes);
+app.use("/api/pesticides", pesticideRoutes);
+
+app.use("/api/soils", soilRoutes);
 
 // app.use(express.static(path.join(__dirname, "/client/dist")));
 

@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { GiSprout } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { FaEdit } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import UpdateManure from "./UpdateManure";
+import { motion } from "framer-motion";
+import AddManure from "./AddManure";
 
 const DashManure = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [manureList, setManureList] = useState([]);
   const [selectedManure, setSelectedManure] = useState(null); // Holds selected manure
+  const [tab, setTab] = useState("dash"); // Default tab to 'dash'
+  const [isEditing, setIsEditing] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const selectedTab = urlParams.get("tab") || null; // Default to 'dash' if no tab is found
+    setTab(selectedTab);
     getManuresByUser();
-  }, [currentUser]);
+  }, [location.search]);
   const getManuresByUser = async () => {
     try {
       const res = await fetch("/api/manures/getbyuser", {
@@ -29,13 +41,31 @@ const DashManure = () => {
       console.log(error);
     }
   };
+
+  const handleDelete = async (id) => {
+    try {
+      await fetch(`/api/manures/deletemanure/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      getManuresByUser();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleManureEdit = (item) => {
+    setSelectedManure(item);
+    setIsEditing(true);
+  };
   const handleManureClick = (manure) => {
     setSelectedManure({ ...manure });
   };
   return (
-    <>
-      <div className="bg-white p-4 min-w-full rounded shadow-md">
-        {selectedManure ? (
+    <div className="min-h-full">
+      <div className="bg-white p-4 min-h-full min-w-full  rounded shadow-md">
+        {isEditing && <AddManure manure={selectedManure} />}
+        {selectedManure && !isEditing ? (
           <div className="manure-details">
             <h3 className="text-lg font-semibold">Manure Details</h3>
             <div className="flex space-x-4 justify-between">
@@ -57,14 +87,14 @@ const DashManure = () => {
                 </p>
                 <div className="flex space-x-2 mt-4">
                   <button
-                    onClick={() => handleRequest(selectedManure)}
+                    onClick={() => handleManureEdit(selectedManure)}
                     className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                   >
                     Edit
                   </button>
                   <button
-                    onClick={() => handleRequest(selectedManure)}
                     className="px-4 py-2 bg-red-500 text-white rounded"
+                    onClick={() => handleDelete(selectedManure._id)}
                   >
                     Remove
                   </button>
@@ -85,34 +115,48 @@ const DashManure = () => {
               </div>
             </div>
           </div>
-        ) : (
-          <ul className="manure-list space-y-2">
-            {manureList &&
-              manureList.map((item) => (
+        ) : manureList && !isEditing ? (
+          <div className="flex-col justify-center items-center">
+            <h1 className="bg-yellow-500 p-3 text-white font-bold rounded w-60 mb-6">
+              Manures posted by you
+            </h1>
+            <ul className="manure-list space-y-2">
+              {manureList.map((item) => (
                 <li className="p-4 flex justify-between bg-green-100 rounded shadow cursor-pointer hover:bg-green-200">
                   <div
-                    className="flex flex-col "
+                    className="flex flex-col"
                     onClick={() => handleManureClick(item)}
                   >
                     <h4 className="font-bold">{item.manure_type}</h4>
                     <p>{item.quantity}-(tractor loads)</p>
                   </div>
-                  <div className="flex  justify-between gap-10">
-                    {" "}
-                    <button className="flex items-center  p-3 gap-2 w-20 bg-green-600 rounded-2xl hover:bg-green-700 text-white">
+                  <div className="flex justify-between gap-10">
+                    {/* <Link
+                  to="/dashboard?tab=addmanure"
+                  state={{ manureId: item._id }}
+                > */}
+                    <button
+                      className="flex items-center p-3 gap-2 w-20 bg-green-600 rounded hover:bg-green-700 text-white"
+                      onClick={() => handleManureEdit(item)}
+                    >
                       <FaEdit />
                       Edit
                     </button>
-                    <button className="bg-red-700 rounded-full p-3">
+                    {/* </Link> */}
+                    <button
+                      className="bg-red-700 rounded p-3 text-white"
+                      onClick={() => handleDelete(item._id)}
+                    >
                       Remove
                     </button>
                   </div>
                 </li>
               ))}
-          </ul>
-        )}
-      </div>{" "}
-    </>
+            </ul>
+          </div>
+        ) : null}
+      </div>
+    </div>
   );
 };
 

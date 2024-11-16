@@ -1,76 +1,73 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const FertiList = () => {
-  const [selectedOption1, setSelectedOption1] = useState("");
-  const [selectedOption2, setSelectedOption2] = useState("");
-  const [options2, setOptions2] = useState([]);
+  const [selectedOption1, setSelectedOption1] = useState("null");
+  const [soilData, setSoilData] = useState("");
+  // const [soilId , setSoilId] = useState("");
+
+  const [selectedOption2, setSelectedOption2] = useState("null");
+  const [cropsData, setCropsData] = useState([]);
   const [fertilizersData, setFertilizersData] = useState([]);
 
-  const handleDropdown1Change = (event) => {
-    const selectedValue = event.target.value;
-    setSelectedOption1(selectedValue);
+  useEffect(() => {
+    soils();
+  }, []);
 
-    // Define options based on selected soil type
-    const soilOptions = {
-      "Alluvial soil": [
-        "Wheat",
-        "Rice",
-        "Sugarcane",
-        "Jute",
-        "Pulses (Lentil)",
-        "Mustard",
-      ],
-      "Black Soil": [
-        "Cotton",
-        "Soyabean",
-        "Sugarcane",
-        "Groundnut",
-        "Wheat",
-        "Chickpea",
-        "Sunflower",
-        "Sorghum",
-      ],
-      "Red Soil": [
-        "Tomato",
-        "Onion",
-        "Cotton",
-        "Tamarind",
-        "Chili",
-        "Sorghum (Jowar)",
-        "Groundnut",
-      ],
-      "Loamy soil": ["Maize", "Tea", "Coffee", "Potato", "Barley"],
-      "Sandy loam soil": [
-        "Tobacco",
-        "Groundnut",
-        "Potato",
-        "Cucumber",
-        "Tomato",
-      ],
-      "Clayey soil": ["Rice", "Paddy", "Sugarcane", "Onion"],
-    };
+  const soils = async () => {
+    try {
+      const res = await fetch("/api/soils/getsoils", {
+        method: "GET",
+      });
+      const soilList = await res.json();
+      if (res.ok) {
+        setSoilData(soilList);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDropdown1Change = async (event) => {
+    const selectedValue = event.target.value;
+    setSelectedOption1(event.target.value);
+    try {
+      // const encodedURI = encodeURIComponent(selectedOption1);
+      console.log(selectedValue);
+
+      const response = await fetch(
+        `/api/crops/getcropsbysoilid/${selectedValue}`,
+        {
+          method: "GET",
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setCropsData(data);
+      }
+    } catch (error) {
+      console.log("Error while fetching the crops");
+    }
 
     // Set options for the second dropdown based on selected soil type
-    setOptions2(soilOptions[selectedValue] || []);
+    // setOptions2(soilOptions[selectedValue] || []);
     setSelectedOption2(""); // Reset the selected crop name when soil type changes
+    setFertilizersData([]);
   };
 
   const handleDropdown2Change = (event) => {
     const selectedValue = event.target.value;
-    setSelectedOption2(selectedValue);
+    setSelectedOption2(event.target.value);
+    console.log(selectedOption2);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const encodedcn = encodeURIComponent(selectedOption2);
-      const encodedsn = encodeURIComponent(selectedOption1);
-      console.log(encodedcn, encodedsn);
-
+      console.log(selectedOption1, selectedOption2);
       const fertilizers = await fetch(
-        `/api/fertilizers/getfertilizers?cn=${encodedcn}&sn=${encodedsn}`,
+        `/api/fertilizers/getfertilizer/?cid=${selectedOption2}&sid=${selectedOption1}`,
         {
-          method: "POST",
+          method: "get",
         }
       );
       const res = await fertilizers.json();
@@ -100,13 +97,20 @@ const FertiList = () => {
               onChange={handleDropdown1Change}
               className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             >
-              <option value="">Select Soil Type</option>
+              {/* <option value="">Select Soil Type</option>
               <option value="Alluvial soil">Alluvial Soil</option>
               <option value="Black Soil">Black Soil</option>
               <option value="Red Soil">Red Soil</option>
               <option value="Loamy soil">Loamy soil</option>
               <option value="Sandy loam soil">Sandy loam soil</option>
-              <option value="Clayey soil">Clayey soil</option>
+              <option value="Clayey soil">Clayey soil</option> */}
+              <option value="">Select Soil Type</option>
+              {soilData &&
+                soilData.map((soil, index) => (
+                  <option key={index} value={soil._id}>
+                    {soil.soil_type}
+                  </option>
+                ))}
             </select>
           </div>
 
@@ -121,9 +125,9 @@ const FertiList = () => {
               className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             >
               <option value="">Select Crop Name</option>
-              {options2.map((option, index) => (
-                <option key={index} value={option}>
-                  {option}
+              {cropsData.map((crop, index) => (
+                <option key={index} value={crop._id}>
+                  {crop.crop_name}
                 </option>
               ))}
             </select>
@@ -142,49 +146,42 @@ const FertiList = () => {
       </div>
 
       {fertilizersData.length > 0 && (
-        <div className="mt-8 max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-bold mb-4 text-green-600">
-            Fertilizers List
-          </h3>
-          <ul className="space-y-4">
-            {fertilizersData.map((fertilizer, index) => (
-              <>
-                <li key={index} className="p-4 rounded-lg  text-gray-800">
-                  <h4 className="text-lg font-semibold">
-                    {fertilizer.fertilizer_name}
-                  </h4>
-                  <ul className="mt-2 space-y-1">
-                    <li>
-                      <strong>Crop Name:</strong> {fertilizer.crop_name}
-                    </li>
-                    <li>
-                      <strong>Soil Type:</strong> {fertilizer.soil_type}
-                    </li>
-                    <li>
-                      <strong>Growing Season:</strong>{" "}
-                      {fertilizer.growing_season}
-                    </li>
-                    <li>
-                      <strong>Application Rate:</strong>{" "}
-                      {fertilizer.application_rate}
-                    </li>
-                    <li>
-                      <strong>Physical Form:</strong> {fertilizer.physical_form}
-                    </li>
-                    <li>
-                      <strong>Safety Caution:</strong>{" "}
-                      {fertilizer.safety_caution}
-                    </li>
-                    <li>
-                      <strong>Storage Condition:</strong>{" "}
-                      {fertilizer.storage_condition}
-                    </li>
-                  </ul>
-                </li>
-                <hr />
-              </>
-            ))}
-          </ul>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {fertilizersData.map((fertilizer, index) => (
+            <a
+              key={index}
+              href="#"
+              className="bg-white p-4 rounded-lg shadow-lg transition duration-300 hover:shadow-xl"
+            >
+              <div className="flex flex-col items-center">
+                <img
+                  src={fertilizer.img_url}
+                  alt={fertilizer.fertilizer_name}
+                  className="w-full h-40 object-cover rounded-md mb-4"
+                />
+                <h5 className="text-xl font-semibold text-green-600 mb-2">
+                  {fertilizer.fertilizer_name}
+                </h5>
+                <ul className="text-gray-600 text-sm">
+                  <li>
+                    <strong>Application Rate:</strong>{" "}
+                    {fertilizer.application_rate}
+                  </li>
+                  <li>
+                    <strong>Physical Form:</strong> {fertilizer.physical_form}
+                  </li>
+                  <li>
+                    <strong>Safety Condition:</strong>{" "}
+                    {fertilizer.safety_caution}
+                  </li>
+                  <li>
+                    <strong>Storage Condition:</strong>{" "}
+                    {fertilizer.storage_condition}
+                  </li>
+                </ul>
+              </div>
+            </a>
+          ))}
         </div>
       )}
     </div>

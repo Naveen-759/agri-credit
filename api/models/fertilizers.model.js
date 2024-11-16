@@ -24,4 +24,6 @@ const fertilizers = mongoose.Schema({
   },
 });
 
-export default mongoose.model("Fertilizers", fertilizers);
+const Fertilizers = mongoose.model("Fertilizers", fertilizers);
+
+export default Fertilizers;

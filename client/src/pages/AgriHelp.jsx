@@ -5,6 +5,7 @@ import { GiSprout, GiFertilizerBag } from "react-icons/gi";
 import CropList from "../components/CropList";
 import FertiList from "../components/FertiList";
 import Disease from "../components/DIseases";
+import Pesticides from "../components/Pesticides";
 
 const AgriHelp = () => {
   const location = useLocation();
@@ -129,7 +130,7 @@ const AgriHelp = () => {
             <div className="h-full px-3 py-20 overflow-y-auto bg-green-50 dark:bg-green-800">
               <div
                 onClick={() => setSidebar(false)}
-                className="flex float-end bg-green-800 rounded-full p-2 text-white cursor-pointer "
+                className="flex float-end  rounded-2xl p-2 text-green-700 font-bold cursor-pointer hover:bg-green-500 hover:text-white "
               >
                 X
               </div>

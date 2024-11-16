@@ -33,7 +33,7 @@ export default function Header() {
   };
 
   return (
-    <Navbar className="sticky top-0 z-50 border-b-2 bg-green-50 bg-opacity-70 backdrop-blur-md shadow-lg">
+    <Navbar className="sticky top-0 z-50 border-b-2 bg-green-50 bg-opacity-70 backdrop-blur-md shadow-lg flex justify-between items-center">
       <Link
         to="/"
         className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold text-green-800 dark:text-white"
@@ -75,7 +75,10 @@ export default function Header() {
             arrowIcon={false}
             inline
             label={
-              <Avatar alt="user" img={currentUser.profilePicture} rounded />
+              <div className="flex gap-3 justify-center items-center">
+                <Avatar alt="user" img={currentUser.profilePicture} rounded />
+                <h1>{currentUser.username}</h1>
+              </div>
             }
           >
             <Dropdown.Header>

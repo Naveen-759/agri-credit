@@ -22,4 +22,6 @@ const crops = Schema({
   },
 });
 
-export default model("Crops", crops);
+const Crops = model("Crops", crops);
+
+export default Crops;

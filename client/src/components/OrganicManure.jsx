@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AddManure from "./AddManure";
 import { toast } from "react-toastify";
+import { GiPencil } from "react-icons/gi";
 // import SearchManure from "./SearchManure";
+import { useSelector } from "react-redux";
+import { GlobalContext } from "../context/GlobalState";
 
 function OrganicManure() {
+  const { calculateDistance, userLatitude, userLongitude } =
+    useContext(GlobalContext);
   const [viewType, setViewType] = useState("search"); // '' | 'add' | 'search'
   const [btn, setBtn] = useState("search");
   // const [sortType, setSortType] = useState("type");
   const [selectedManure, setSelectedManure] = useState(null); // Holds selected manure
   const [manureList, setManureList] = useState([]);
+  const { currentUser } = useSelector((state) => state.user);
+  console.log(currentUser);
 
   const getManures = async () => {
     try {
@@ -26,6 +33,10 @@ function OrganicManure() {
     }
   };
   console.log(manureList);
+  console.log("User Latitude:", userLatitude);
+  console.log("User Longitude:", userLongitude);
+  // console.log("Manure Latitude:", selectedManure.manure_lat);
+  // console.log("Manure Longitude:", selectedManure.manure_long); 
 
   useEffect(() => {
     // setViewType("add");
@@ -87,6 +98,15 @@ function OrganicManure() {
                     <strong>Address:</strong> {selectedManure.address}
                   </p>
                   <p>
+                    <strong>Distance:</strong>{" "}
+                    {calculateDistance(
+                      userLatitude,
+                      userLongitude,
+                      selectedManure.manure_lat,
+                      selectedManure.manure_long
+                    )}
+                  </p>
+                  <p>
                     <strong>Owner:</strong> {selectedManure.posted_by}
                   </p>
                   <div className="flex space-x-2 mt-4">
@@ -114,10 +134,6 @@ function OrganicManure() {
               </div>
             </div>
           ) : (
-            // <>
-            //   <div>
-            //     <input type="checkbox" />
-            //   </div>
             <ul className="manure-list space-y-2">
               {manureList &&
                 manureList.map((item) => (
@@ -132,7 +148,6 @@ function OrganicManure() {
                   </li>
                 ))}
             </ul>
-            // </>
           )}
         </div>
       )}

@@ -50,6 +50,7 @@ const Home = () => {
         <div
           className="relative min-h-screen flex flex-col items-center justify-center bg-cover bg-center min-w-full"
           style={{
+            opacity: 0.8,
             backgroundImage: `url(${imageURL})`,
           }}
         >

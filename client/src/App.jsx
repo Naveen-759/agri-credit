@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -15,10 +15,13 @@ import TandC from "./pages/TandC";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AgriHelp from "./pages/AgriHelp";
 import Services from "./pages/Services";
+import AdminPage from "./pages/AdminPage";
+
+// import { GlobalContext } from "./context/GlobalState";
 
 export default function App() {
   const user = useSelector((state) => state.user.currentUser);
-  //console.log(user)
+
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -26,6 +29,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/admin" element={<AdminPage />} />
+
         <Route
           path="/sign-in"
           element={user ? <Navigate to="/dashboard" /> : <SignIn />}

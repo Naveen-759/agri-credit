@@ -9,7 +9,7 @@ const CropList = () => {
     try {
       const encodedURI = encodeURIComponent(selectedSoilType);
       const response = await fetch(`/api/crops/getcrops?st=${encodedURI}`, {
-        method: "POST",
+        method: "GET",
       });
       if (response.ok) {
         const data = await response.json();

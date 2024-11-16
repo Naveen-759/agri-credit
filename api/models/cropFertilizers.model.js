@@ -1,24 +1,25 @@
-import { type } from "express/lib/response";
 import mongoose, { Schema, model } from "mongoose";
-import cropsModel from "./crops.model.js";
-import soilModel from "./soil.model.js";
-import fertilizersModel from "./fertilizers.model.js";
+// import cropsModel from "./crops.model.js";
+// import soilModel from "./soil.model.js";
+// import fertilizersModel from "./fertilizers.model.js";
 
 const cropFertilizer = Schema({
-  crop_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: cropsModel,
-  },
   soil_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: soilModel,
+    type: String,
+    // ref: "Soil",
+  },
+  crop_id: {
+    type: String,
+    // ref: "Crops",
   },
   fertilizer_id: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: fertilizersModel,
+      ref: "Fertilizers",
     },
   ],
 });
 
-export default model("CropFertilizer", cropFertilizer);
+const CropFertilizer = model("CropFertilizer", cropFertilizer);
+
+export default CropFertilizer;
