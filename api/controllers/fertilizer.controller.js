@@ -47,3 +47,12 @@ export const createFertilizer = async (req, res) => {
     }
   }
 };
+
+export const deleteFertilizer = async (req, res) => {
+  try {
+    await Fertilizers.findByIdAndDelete(req.params.fertilizerId);
+    
+  } catch (err) {
+    console.log(err);
+  }
+};

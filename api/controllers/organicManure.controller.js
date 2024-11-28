@@ -1,7 +1,7 @@
 import Manure from "../models/organicManure.model.js";
 
 export const addManure = async (req, res) => {
-  console.log(req.body, req.user);
+  // console.log(req.body, req.user);
 
   const {
     manure_type,
@@ -46,7 +46,7 @@ export const getManures = async (req, res) => {
   try {
     const manures = await Manure.find({});
     res.json(manures);
-    console.log(manures);
+    // console.log(manures);
   } catch (error) {
     console.log(error);
   }

@@ -9,7 +9,7 @@ const pesticides = Schema({
     type: String,
     required: true,
   },
-  target_pest: {
+  pesticide_name: {
     type: String,
     required: true,
   },
@@ -17,7 +17,7 @@ const pesticides = Schema({
     type: String,
     required: true,
   },
-  ing_url: {
+  img_url: {
     type: String,
     required: true,
   },

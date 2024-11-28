@@ -17,11 +17,11 @@ const AddCrop = ({ crop }) => {
     sowing_period: crop ? crop.sowing_period : "",
     duration_of_crop: crop ? crop.duration_of_crop : "",
     harvesting_period: crop ? crop.harvesting_period : "",
-    grown_soils: crop ? crop.grown_soils : "",
+    grown_soils: "",
     img_url: crop ? crop.img_url : "",
   });
   const navigate = useNavigate();
-  console.log(crop);
+  // console.log(crop);
   console.log(formData);
 
   const [imageFile, setImageFile] = useState(crop ? crop.img_url : "");
@@ -29,6 +29,7 @@ const AddCrop = ({ crop }) => {
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
   const [imageFileUploading, setImageFileUploading] = useState(false);
+  const [soils, setSoils] = useState([]);
   const location = useLocation();
 
   useEffect(() => {
@@ -72,6 +73,12 @@ const AddCrop = ({ crop }) => {
     );
   };
 
+  const updateSoils = async () => {
+    {
+      soils && soils.map((soil) => {});
+    }
+  };
+
   const handleForm = async (e) => {
     e.preventDefault();
     try {
@@ -80,29 +87,27 @@ const AddCrop = ({ crop }) => {
         {
           method: crop ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
-          // body: JSON.stringify(formDataToSend),
           body: JSON.stringify(formData),
         }
       );
-
+      console.log("Form submitted successfully", res);
       if (res.ok) {
-        const result = await res.json();
-        console.log("Form submitted successfully", result);
-        setFormData({
-          crop_name: "",
-          sowing_period: "",
-          duration_of_crop: "",
-          harvesting_period: "",
-          grown_soils: "",
-        });
+        // updateSoils(res._id);
+        // const result = await res.json();
+        // setFormData({
+        //   crop_name: "",
+        //   sowing_period: "",
+        //   duration_of_crop: "",
+        //   harvesting_period: "",
+        //   grown_soils: "",
+        //   grown_soils: "",
+        // });
         setImageFile(null);
         e.target.reset();
         navigate("/dashboard?tab=totalcrops");
-      } else {
-        console.error("Failed to submit form");
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.log("Error submitting form:", error);
     }
   };
 
@@ -120,7 +125,7 @@ const AddCrop = ({ crop }) => {
       <form
         onSubmit={handleForm}
         className="space-y-4 min-w-full mb-4 bg-white p-4 rounded shadow-md"
-      > 
+      >
         <label className="block">
           Crop Name :
           <input
@@ -198,7 +203,7 @@ const AddCrop = ({ crop }) => {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                grown_soils: e.target.value,
+                grown_soils: e.target.value.split(","),
               })
             }
             placeholder="Soil1 , Soil2 ....."

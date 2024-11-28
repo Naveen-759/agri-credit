@@ -77,20 +77,30 @@ export const addCrop = async (req, res) => {
     sowing_period,
     duration_of_crop,
     harvesting_period,
+    grown_soils,
     img_url,
   } = req.body;
+
   try {
+    // Check for mandatory fields
     if (
       !crop_name ||
       !sowing_period ||
       !duration_of_crop ||
-      !harvesting_period ||
       !grown_soils ||
+      !harvesting_period ||
       !img_url
     ) {
-      res.status(400);
-      throw new Error("All fields are mandatory");
+      return res.status(400).json({ message: "All fields are mandatory" });
     }
+
+    // Check if the crop already exists
+    const check = await Crops.findOne({ crop_name });
+    if (check) {
+      return res.json({ message: "Crop already exists" });
+    }
+
+    // Create the new crop
     const crop = await Crops.create({
       crop_name,
       sowing_period,
@@ -98,10 +108,41 @@ export const addCrop = async (req, res) => {
       harvesting_period,
       img_url,
     });
-    res.json(crop);
-    console.log("Added the crop");
+
+    // If crop is created, update soil data
+    if (crop) {
+      for (const soil of grown_soils) {
+        console.log(soil);
+
+        try {
+          const soildetails = await Soil.findOne({ soil_type: soil }); // Use findOne instead of find
+          console.log(soildetails);
+
+          if (soildetails) {
+            try {
+              const soilupdate = await Soil.updateOne(
+                { _id: soildetails._id },
+                { $push: { crops_grown: crop._id } }
+              );
+              if (soilupdate) {
+                return res.status(200).json(crop);
+              }
+            } catch (error) {
+              console.log("Error while updating the soil", error);
+            }
+          } else {
+            console.log(`Soil not found for: ${soil}`);
+          }
+        } catch (error) {
+          console.error(`Error updating soil: ${error.message}`);
+        }
+      }
+    }
+
+    // Send the final response with the crop data
   } catch (error) {
-    console.log(error);
+    console.error(`Error adding crop: ${error.message}`);
+    res.status(500).json({ message: "Server error" });
   }
 };
 

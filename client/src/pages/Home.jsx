@@ -47,74 +47,72 @@ const Home = () => {
       ></motion.div> */}
 
       <div className="relative z-10 min-w-full flex flex-col items-center justify-center text-center">
-        <div
-          className="relative min-h-screen flex flex-col items-center justify-center bg-cover bg-center min-w-full"
-          style={{
-            opacity: 0.8,
-            backgroundImage: `url(${imageURL})`,
-          }}
-        >
-          {/* Header Animation */}
-          <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#e75151] to-[#dda15e] mb-6"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
+        <div className="relative min-w-full flex items-center justify-center min-h-screen bg-white text-green-800 dark:bg-black dark:text-green-100">
+          {/* Background Image with Overlay */}
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${imageURL})`,
+            }}
           >
-            Welcome to <br />
-            {/* <span className="inline-block">
-              <Typewriter
-                words={["Farmer's Assistant"]}
-                loop={0}
-                cursor={true}
-                cursorStyle="|"
-                typeSpeed={60}
-                deleteSpeed={40}
-                delaySpeed={1000}
-              />
-            </span> */}
-            Farmer's Assistant
-          </motion.h1>
+            {/* Overlay to Control Opacity */}
+            <div className="absolute inset-0 bg-black opacity-25"></div>
+          </div>
 
-          {/* Paragraph Animation */}
-          <motion.p
-            className="text-lg md:text-xl mb-8 max-w-md mx-auto text-yellow-50"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
-          >
-            Farmer's Assistant:
-            <br />
-            <span className="inline-block">
-              <Typewriter
-                words={[
-                  "Empowering Farmers, Growing Futures",
-                  "Smart Solutions for Agriculture",
-                  "Innovative Farming, Better Yields",
-                  "Sustainable Farming Made Simple",
-                  "Your Digital Farming Partner",
-                ]}
-                loop={0}
-                cursor={true}
-                cursorStyle="|"
-                typeSpeed={60}
-                deleteSpeed={40}
-                delaySpeed={1000}
-              />
-            </span>
-          </motion.p>
+          <div className="relative z-10 min-w-full flex flex-col items-center justify-center text-center">
+            {/* Header Animation */}
+            <motion.h1
+              className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text opacity-100 bg-gradient-to-r from-[#e75151] to-[#dda15e] mb-6"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+            >
+              <span className="opacity-100">
+                Welcome to <br />
+                Farmer's Assistant
+              </span>
+            </motion.h1>
 
-          {/* Button Animation */}
-          <motion.div
-            className="inline-block px-6 py-3 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-110"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, ease: "easeOut", delay: 1 }}
-          >
-            <Link to="/sign-up">Get Started</Link>
-          </motion.div>
+            {/* Paragraph Animation */}
+            <motion.p
+              className="text-lg md:text-xl mb-8 max-w-md mx-auto text-yellow-50"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
+            >
+              Farmer's Assistant:
+              <br />
+              <span className="inline-block">
+                <Typewriter
+                  words={[
+                    "Empowering Farmers, Growing Futures",
+                    "Smart Solutions for Agriculture",
+                    "Innovative Farming, Better Yields",
+                    "Sustainable Farming Made Simple",
+                    "Your Digital Farming Partner",
+                  ]}
+                  loop={0}
+                  cursor={true}
+                  cursorStyle="|"
+                  typeSpeed={60}
+                  deleteSpeed={40}
+                  delaySpeed={1000}
+                />
+              </span>
+            </motion.p>
+
+            {/* Button Animation */}
+            <motion.div
+              className="inline-block px-6 py-3 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-110"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, ease: "easeOut", delay: 1 }}
+            >
+              <Link to="/sign-up">Get Started</Link>
+            </motion.div>
+          </div>
         </div>
 
         <main className="w-full">

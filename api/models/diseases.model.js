@@ -1,4 +1,4 @@
-import { Schema,model } from "mongoose";
+import { Schema, model } from "mongoose";
 
 const diseases = Schema({
   disease_name: {
@@ -17,11 +17,10 @@ const diseases = Schema({
     type: String,
     required: true,
   },
-  ing_url: {
+  imageURL: {
     type: String,
     required: true,
   },
-  
 });
 
-export default model("Diseases" , diseases)
+export default model("Diseases", diseases);

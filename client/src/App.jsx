@@ -16,6 +16,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AgriHelp from "./pages/AgriHelp";
 import Services from "./pages/Services";
 import AdminPage from "./pages/AdminPage";
+import OtpVerification from "./pages/OtpVerification";
 
 // import { GlobalContext } from "./context/GlobalState";
 
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/verification" element={<OtpVerification />} />
 
         <Route
           path="/sign-in"
@@ -48,6 +50,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/services" element={<Services />} />
         </Route>
+
         {/* <Route element={<PrivateRoute />}>
         </Route> */}
         {/* <Route path="/croplist" element={<CropList />} />

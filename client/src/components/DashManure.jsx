@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { GiSprout } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import UpdateManure from "./UpdateManure";
-import { motion } from "framer-motion";
+import { GlobalContext } from "../context/GlobalState";
 import AddManure from "./AddManure";
 
 const DashManure = () => {
   const { currentUser } = useSelector((state) => state.user);
-  const [manureList, setManureList] = useState([]);
   const [selectedManure, setSelectedManure] = useState(null); // Holds selected manure
   const [tab, setTab] = useState("dash"); // Default tab to 'dash'
   const [isEditing, setIsEditing] = useState(false);
+  const { manureList } = useContext(GlobalContext);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,25 +20,7 @@ const DashManure = () => {
     const urlParams = new URLSearchParams(location.search);
     const selectedTab = urlParams.get("tab") || null; // Default to 'dash' if no tab is found
     setTab(selectedTab);
-    getManuresByUser();
   }, [location.search]);
-  const getManuresByUser = async () => {
-    try {
-      const res = await fetch("/api/manures/getbyuser", {
-        method: "GET",
-        credentials: "include",
-      });
-      const manures = await res.json();
-      setManureList(manures);
-      console.log(manures);
-
-      if (res.ok) {
-        console.log("manures fetched successfully");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleDelete = async (id) => {
     try {
@@ -121,37 +101,43 @@ const DashManure = () => {
               Manures posted by you
             </h1>
             <ul className="manure-list space-y-2">
-              {manureList.map((item) => (
-                <li className="p-4 flex justify-between bg-green-100 rounded shadow cursor-pointer hover:bg-green-200">
-                  <div
-                    className="flex flex-col"
-                    onClick={() => handleManureClick(item)}
-                  >
-                    <h4 className="font-bold">{item.manure_type}</h4>
-                    <p>{item.quantity}-(tractor loads)</p>
-                  </div>
-                  <div className="flex justify-between gap-10">
-                    {/* <Link
+              {manureList.length > 0 ? (
+                manureList.map((item) => (
+                  <li className="p-4 flex justify-between bg-green-100 rounded shadow cursor-pointer hover:bg-green-200">
+                    <div
+                      className="flex flex-col"
+                      onClick={() => handleManureClick(item)}
+                    >
+                      <h4 className="font-bold">{item.manure_type}</h4>
+                      <p>{item.quantity}-(tractor loads)</p>
+                    </div>
+                    <div className="flex justify-between gap-10">
+                      {/* <Link
                   to="/dashboard?tab=addmanure"
                   state={{ manureId: item._id }}
                 > */}
-                    <button
-                      className="flex items-center p-3 gap-2 w-20 bg-green-600 rounded hover:bg-green-700 text-white"
-                      onClick={() => handleManureEdit(item)}
-                    >
-                      <FaEdit />
-                      Edit
-                    </button>
-                    {/* </Link> */}
-                    <button
-                      className="bg-red-700 rounded p-3 text-white"
-                      onClick={() => handleDelete(item._id)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </li>
-              ))}
+                      <button
+                        className="flex items-center p-3 gap-2 w-20 bg-green-600 rounded hover:bg-green-700 text-white"
+                        onClick={() => handleManureEdit(item)}
+                      >
+                        <FaEdit />
+                        Edit
+                      </button>
+                      {/* </Link> */}
+                      <button
+                        className="bg-red-700 rounded p-3 text-white"
+                        onClick={() => handleDelete(item._id)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <h1 className="flex content-center text-center">
+                  You have not posted any manures
+                </h1>
+              )}
             </ul>
           </div>
         ) : null}

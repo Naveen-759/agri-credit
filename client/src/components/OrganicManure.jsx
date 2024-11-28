@@ -36,7 +36,7 @@ function OrganicManure() {
   console.log("User Latitude:", userLatitude);
   console.log("User Longitude:", userLongitude);
   // console.log("Manure Latitude:", selectedManure.manure_lat);
-  // console.log("Manure Longitude:", selectedManure.manure_long); 
+  // console.log("Manure Longitude:", selectedManure.manure_long);
 
   useEffect(() => {
     // setViewType("add");
@@ -82,8 +82,17 @@ function OrganicManure() {
         <div className="bg-white p-4 min-w-full rounded shadow-md">
           {selectedManure ? (
             <div className="manure-details">
-              <h3 className="text-lg font-semibold">Manure Details</h3>
-              <div className="flex space-x-4 justify-between">
+              <h3 className="text-lg font-semibold content-center">
+                Manure Details
+              </h3>
+              <div className="flex flex-col sm:flex sm:flex-row-reverse content-center items-center space-x-4 justify-between">
+                <div className="manureimage">
+                  <img
+                    src={selectedManure.manure_img}
+                    alt={selectedManure.type}
+                    className="w-60 h-40 sm:mr-10 object-cover rounded border border-gray-300"
+                  />
+                </div>
                 <div className="manure-text">
                   <p>
                     <strong>Type:</strong> {selectedManure.manure_type}
@@ -105,6 +114,7 @@ function OrganicManure() {
                       selectedManure.manure_lat,
                       selectedManure.manure_long
                     )}
+                    km
                   </p>
                   <p>
                     <strong>Owner:</strong> {selectedManure.posted_by}
@@ -123,13 +133,6 @@ function OrganicManure() {
                       Close
                     </button>
                   </div>
-                </div>
-                <div className="manureimage">
-                  <img
-                    src={selectedManure.manure_img}
-                    alt={selectedManure.type}
-                    className="w-60 h-40 mr-10 object-cover rounded border border-gray-300"
-                  />
                 </div>
               </div>
             </div>

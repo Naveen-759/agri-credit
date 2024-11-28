@@ -46,7 +46,7 @@ export default function Header() {
 
       <div className="flex gap-5 items-center md:order-3">
         {/* Create post icon */}
-        {currentUser?.isAdmin && (
+        {/* {currentUser?.isAdmin && (
           <Link to="/create-post">
             <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-700 cursor-pointer transition-transform transform hover:scale-105 hover:bg-green-100 dark:hover:bg-green-600 shadow-md">
               <GoPlus
@@ -55,7 +55,7 @@ export default function Header() {
               />
             </div>
           </Link>
-        )}
+        )} */}
 
         {/* Theme: dark or light */}
         <div
