@@ -1,21 +1,23 @@
 import Manure from "../models/organicManure.model.js";
 
 export const addManure = async (req, res) => {
-  // console.log(req.body, req.user);
-
   const {
     manure_type,
     quantity,
+    cost,
     address,
     manure_img,
     manure_lat,
     manure_long,
     description,
   } = req.body;
+  console.log(req.body);
+
   try {
     if (
       !manure_type ||
       !quantity ||
+      !cost ||
       !address ||
       !manure_img ||
       !manure_lat ||
@@ -25,39 +27,44 @@ export const addManure = async (req, res) => {
       res.status(400);
       throw new Error("All fields are mandatory");
     }
+
     const manure = await Manure.create({
       manure_type,
       quantity: +quantity,
+      cost_per_kg: +cost,
       address,
       manure_img,
       manure_lat,
       manure_long,
       description,
-      posted_by: String(req.user.name),
+      posted_by: req.params.userId,
     });
+
     res.json(manure);
-    console.log("Added the maure");
+    console.log("Added the manure");
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Failed to add manure" });
   }
 };
 
 export const getManures = async (req, res) => {
   try {
-    const manures = await Manure.find({});
+    const manures = await Manure.find({}).populate("posted_by");
     res.json(manures);
-    // console.log(manures);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Failed to fetch manures" });
   }
 };
 
 export const getByUser = async (req, res) => {
   try {
-    const manuresByUser = await Manure.find({ posted_by: req.user.name });
+    const manuresByUser = await Manure.find({ posted_by: req.params.userId });
     res.json(manuresByUser);
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to fetch user-specific manures" });
   }
 };
 
@@ -65,45 +72,60 @@ export const deleteManure = async (req, res) => {
   try {
     const manure = await Manure.findByIdAndDelete(req.params.manureId);
     if (!manure) {
-      res.status(400);
-      res.json("Manure doesn.t exist");
+      res.status(400).json({ error: "Manure doesn't exist" });
+      return;
     }
 
-    // if (manure.posted_by != req.user.id) {
-    //   res.json(403);
-    //   res.json("User doesn't access the post");
-    // }
-
-    res.json(manure);
-  } catch (err) {
-    console.log(err);
+    res.json({ message: "Manure deleted successfully", manure });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to delete manure" });
   }
 };
 
-export const updateManure = async (req, res) => {
+export const updateManure = async (req, res ) => {
+  const { manure_type, quantity, cost, address, manure_img, description } =
+    req.body;
+
   try {
     const updatedManure = await Manure.findByIdAndUpdate(
       req.params.manureId,
       {
         $set: {
-          manure_type: req.body.manure_type,
-          quantity: req.body.quantity,
-          address: req.body.address,
-          manure_img: req.body.manure_img,
-          description: req.body.description,
+          manure_type,
+          quantity: +quantity,
+          cost_per_kg: +cost,
+          address,
+          manure_img,
+          description,
         },
       },
       { new: true }
     );
-    return res.status(200).json(updatedManure);
-  } catch (error) {}
+
+    if (!updatedManure) {
+      res.status(404).json({ error: "Manure not found" });
+      return;
+    }
+
+    res.json(updatedManure);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to update manure" });
+  }
 };
 
 export const getManure = async (req, res) => {
   try {
     const manure = await Manure.findById(req.params.manureId);
+    if (!manure) {
+      res.status(404).json({ error: "Manure not found" });
+      return;
+    }
+
     res.json(manure);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Failed to fetch manure details" });
   }
 };

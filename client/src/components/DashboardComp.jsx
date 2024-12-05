@@ -156,7 +156,7 @@ export default function DashboardComp() {
                 Agri Services
               </h1>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                <Link to="/dashboard?tab=manuresbyuser">
+                <Link to="/dashboard?tab=totalmanures">
                   <div className="flex justify-between items-center p-6 bg-[#f0be9a] rounded-lg shadow-lg border border-gray-200 gap-4 ">
                     <GiSprout className="flex items-center justify-center w-16 h-16 text-[#7B3F00] rounded-full bg-white p-2" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">

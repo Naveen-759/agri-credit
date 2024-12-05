@@ -11,10 +11,10 @@ import { verifyToken } from "../utils/verifyUser.js";
 
 const router = express.Router();
 
-router.post("/addmanure", verifyToken, addManure);
+router.post("/addmanure/:userId", verifyToken, addManure);
 router.get("/getmanures", getManures);
 router.get("/getmanure/:manureId", getManure);
-router.get("/getbyuser", verifyToken, getByUser);
+router.get("/getbyuser/:userId", verifyToken, getByUser);
 router.delete("/deletemanure/:manureId", verifyToken, deleteManure);
 router.put("/updatemanure/:manureId", verifyToken, updateManure);
 

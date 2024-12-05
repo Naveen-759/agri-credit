@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const AddDiseases = () => {
   return (
@@ -6,6 +6,6 @@ const AddDiseases = () => {
       <h1>Coming Soon</h1>
     </div>
   );
-}
+};
 
-export default AddDiseases
+export default AddDiseases;

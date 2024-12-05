@@ -1,9 +1,16 @@
 import React, { createContext, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { io } from "socket.io-client";
 
 const GlobalContext = createContext();
 export { GlobalContext };
 
+// // Connect to the Socket.IO server
+// const socket = io("http://localhost:3000");
+
 const GlobalProvider = ({ children }) => {
+  const { currentUser, error, loading } = useSelector((state) => state.user);
+
   const [userLatitude, setUserLatitude] = useState(null);
   const [userLongitude, setUserLongitude] = useState(null);
   const [soilList, setSoilList] = useState([]);
@@ -13,6 +20,7 @@ const GlobalProvider = ({ children }) => {
   const [manureAdminList, setManureAdminList] = useState([]);
   const [pesticideList, setPesticideList] = useState([]);
   const [manureList, setManureList] = useState([]);
+  const [bookingsList, setBookingsList] = useState([]);
 
   useEffect(() => {
     getCurrentLocation();
@@ -23,7 +31,34 @@ const GlobalProvider = ({ children }) => {
     getAllManures();
     getAllPesticides();
     getManuresByUser();
+    getBookingsByUser();
   }, []); // Empty dependency array to run useEffect only once on component mount
+
+  // useEffect(() => {
+  //   // Listen for manure updates
+  //   socket.on("bookingUpdated", (updatedManure) => {
+  //     console.log("Real-time manure update received:", updatedManure);
+
+  //     // Update manureList state in real-time
+  //     setManureList((prevManureList) =>
+  //       prevManureList.map((manure) =>
+  //         manure._id === updatedManure._id ? updatedManure : manure
+  //       )
+  //     );
+
+  //     // Update manureAdminList state in real-time if applicable
+  //     setManureAdminList((prevManureAdminList) =>
+  //       prevManureAdminList.map((manure) =>
+  //         manure._id === updatedManure._id ? updatedManure : manure
+  //       )
+  //     );
+  //   });
+
+  //   // Cleanup socket listeners on unmount
+  //   return () => {
+  //     socket.off("manureUpdated");
+  //   };
+  // }, []);
 
   const getCurrentLocation = async () => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -50,7 +85,8 @@ const GlobalProvider = ({ children }) => {
 
     const distance = R * c; // Distance in kilometers
 
-    return distance;
+    // Round the distance to 1 decimal place
+    return parseFloat(distance.toFixed(1));
   };
 
   const getAllSoils = async () => {
@@ -141,7 +177,8 @@ const GlobalProvider = ({ children }) => {
 
   const getManuresByUser = async () => {
     try {
-      const res = await fetch("/api/manures/getbyuser", {
+      console.log(currentUser);
+      const res = await fetch(`/api/manures/getbyuser/${currentUser._id}`, {
         method: "GET",
         credentials: "include",
       });
@@ -156,6 +193,49 @@ const GlobalProvider = ({ children }) => {
       console.log(error);
     }
   };
+
+  // const getBookingsByUser = async () => {
+  //   try {
+  //     const res = await fetch(
+  //       `/api/bookings/bookingsbyuser/${currentUser._id}`,
+  //       {
+  //         method: "GET",
+  //         credentials: "include",
+  //       }
+  //     );
+  //     const booking = await res.json();
+  //     if (res.ok) {
+  //       setBookingsList(booking);
+  //       console.log(bookingsList);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const getBookingsByUser = async () => {
+    try {
+      const res = await fetch(
+        `/api/bookings/bookingsbyuser/${currentUser._id}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      const booking = await res.json();
+      if (res.ok) {
+        setBookingsList(booking);
+        console.log("Bookings fetched successfully:", booking); // Log fetched data directly
+      }
+    } catch (error) {
+      console.log("Error fetching bookings:", error);
+    }
+  };
+
+  // To confirm updates:
+  useEffect(() => {
+    console.log("Bookings list updated:", bookingsList);
+  }, [bookingsList]); // Watches for changes in bookingsList
 
   return (
     <GlobalContext.Provider
@@ -173,6 +253,9 @@ const GlobalProvider = ({ children }) => {
         userLatitude,
         calculateDistance,
         getManuresByUser,
+        getAllManures,
+        bookingsList,
+        getBookingsByUser,
       }}
     >
       {children}

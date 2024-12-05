@@ -4,6 +4,7 @@ import OrganicManure from "../components/OrganicManure";
 import { GiSprout } from "react-icons/gi";
 import { FaTractor } from "react-icons/fa";
 import NurseryManagement from "../components/Nursery/NurseryManagement";
+import TractorManagement from "../components/tractor/Tractor";
 // import { Tractor } from "";
 
 const Services = () => {
@@ -43,7 +44,7 @@ const Services = () => {
             {/* Tractor Card */}
             <div className="cont4 bg-green-100 bg-opacity-60 backdrop-blur-md rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 flex flex-col items-center">
               <Link
-                to="/services?tab=manures"
+                to="/services?tab=tractors"
                 className="flex flex-col items-center"
               >
                 <FaTractor className="h-10 w-10 mb-3 text-green-600" />
@@ -105,8 +106,9 @@ const Services = () => {
 
           <aside
             id="default-sidebar"
-            className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-${sidebar ? "0" : "full"
-              } `}
+            className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-${
+              sidebar ? "0" : "full"
+            } `}
             aria-label="Sidebar"
           >
             <div className="h-full px-3 py-20 overflow-y-auto bg-green-50 dark:bg-green-800">
@@ -138,8 +140,9 @@ const Services = () => {
                 <li>
                   <Link
                     to="/services?tab=manures"
-                    className={`flex items-center p-2 text-green-900 rounded-lg dark:text-white ${tab === "manures" ? "bg-green-100 dark:bg-green-700" : ""
-                      } hover:bg-green-100 dark:hover:bg-green-700 group`}
+                    className={`flex items-center p-2 text-green-900 rounded-lg dark:text-white ${
+                      tab === "manures" ? "bg-green-100 dark:bg-green-700" : ""
+                    } hover:bg-green-100 dark:hover:bg-green-700 group`}
                   >
                     <GiSprout className="h-5 w-5  text-[#422006]  transition duration-75  group-hover:text-[#422006] dark:group-hover:text-white " />
                     <span className="flex-1 ms-3 text-[#422006] whitespace-nowrap">
@@ -159,6 +162,8 @@ const Services = () => {
             }
           >
             {tab === "manures" && <OrganicManure />}
+            {tab === "tractors" && <TractorManagement />}
+
             {tab === "nurseries" && <NurseryManagement />}
 
             {/* {tab === "tractors" && <Tractor />} */}

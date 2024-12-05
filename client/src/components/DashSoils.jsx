@@ -8,6 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { GiEmptyWoodBucket } from "react-icons/gi";
 import { GlobalContext } from "../context/GlobalState";
+import AddSoil from "./AddSoil";
 const DashSoils = () => {
   const [editing, setEditing] = useState(false);
   const [selectedSoil, setSelectedSoil] = useState(null);

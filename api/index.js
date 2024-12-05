@@ -10,10 +10,12 @@ import manureRoutes from "./routes/organicManure.route.js";
 import soilRoutes from "./routes/soil.route.js";
 import diseaseRoutes from "./routes/disease.route.js";
 import pesticideRoutes from "./routes/pesticide.route.js";
+import bookingRoutes from "./routes/booking-route.js";
 
 import cookieParser from "cookie-parser";
 import path from "path";
-// import cors from "cors";
+
+import cors from "cors";
 
 dotenv.config();
 mongoose
@@ -32,16 +34,37 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-// const corsOptions = {
-// origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
-// methods: "GET , POST , PUT , DELETE , PATCH",
-// credentials: true,
-// };
-// app.use(cors(corsOptions));
+const corsOptions = {
+  origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
+  methods: "GET , POST , PUT , DELETE , PATCH",
+  credentials: true,
+};
+app.use(cors());
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log("Server is running on Port 3000");
 });
+
+import { Server } from "socket.io";
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173", // Allow requests from your frontend
+    methods: ["GET", "POST"],
+  },
+});
+
+// Listen for incoming socket connections
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+
+  // Handle disconnection
+  socket.on("disconnect", () => {
+    console.log("A user disconnected:", socket.id);
+  });
+});
+
+export { io };
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
@@ -51,7 +74,7 @@ app.use("/api/fertilizers", fertilizerRoutes);
 app.use("/api/manures", manureRoutes);
 app.use("/api/diseases", diseaseRoutes);
 app.use("/api/pesticides", pesticideRoutes);
-
+app.use("/api/bookings", bookingRoutes);
 app.use("/api/soils", soilRoutes);
 
 // app.use(express.static(path.join(__dirname, "/client/dist")));

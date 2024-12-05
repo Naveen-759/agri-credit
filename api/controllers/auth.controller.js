@@ -82,8 +82,8 @@ export const signin = async (req, res, next) => {
         name: validUser.username,
         isAdmin: validUser.isAdmin,
       },
-      process.env.JWT_SECRET,
-      { expiresIn: "30d" }
+      process.env.JWT_SECRET
+      // { expiresIn: "30d" }
     );
 
     const { password: pass, ...others } = validUser._doc;
@@ -92,6 +92,7 @@ export const signin = async (req, res, next) => {
       .status(200)
       .cookie("access_token", token, {
         httpOnly: true,
+        maxAge: 100 * 365 * 24 * 60 * 60 * 1000,
       })
       .json(others);
   } catch (err) {

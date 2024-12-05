@@ -133,3 +133,25 @@ export const getUser = async (req, res, next) => {
     next(err);
   }
 };
+
+export const updatePhoneNumber = async (req, res) => {
+  // const id = req.params.userId;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      { _id: req.params.userId },
+      { phone: req.query.mobile }, // Update the phone field
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedUser) {
+      res.json("User not found");
+    }
+
+    console.log("Updated User:", updatedUser);
+    return updatedUser;
+  } catch (error) {
+    console.error("Error updating phone number:", error);
+    throw error;
+  }
+};

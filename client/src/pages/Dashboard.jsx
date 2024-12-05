@@ -10,12 +10,14 @@ import AddManure from "../components/AddManure";
 import DashManure from "../components/DashManure";
 import DashCrops from "../components/DashCrops";
 import AddCrop from "../components/AddCrop";
+import DashTotalManure from "../components/DashTotalManure";
 import {
   FaHeartbeat,
   FaSyringe,
   FaUser,
   FaTractor,
   FaSeedling,
+  FaTasks,
 } from "react-icons/fa";
 import { GiSprout, GiFertilizerBag } from "react-icons/gi";
 import { CiLogout } from "react-icons/ci";
@@ -28,6 +30,7 @@ import DashSoils from "../components/DashSoils";
 import DashFertilizers from "../components/DashFertilizers";
 import DashDiseases from "../components/DashDiseases";
 import DashPesticides from "../components/DashPesticides";
+import MyActivities from "../components/MyActivities";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -147,7 +150,107 @@ export default function Dashboard() {
                       Pro
                     </span> */}
                   </Link>
-                </li>{" "}
+                </li>
+                <hr />
+                <li>
+                  <Link
+                    to="/dashboard?tab=myactivities"
+                    className={`flex items-center p-2 text-green-900 rounded-lg dark:text-white ${
+                      tab === "croplist" ? "bg-green-100 dark:bg-green-700" : ""
+                    } hover:bg-green-100 dark:hover:bg-green-700 group`}
+                  >
+                    {/* <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 64 64"
+                      width="25"
+                      height="25"
+                      fill="none"
+                    >
+                      <rect
+                        x="8"
+                        y="12"
+                        width="48"
+                        height="44"
+                        rx="4"
+                        fill="#68D391"
+                      />
+                      <rect
+                        x="8"
+                        y="12"
+                        width="48"
+                        height="8"
+                        rx="4"
+                        fill="#38A169"
+                      />
+
+                      <circle cx="16" cy="28" r="2" fill="#FFFFFF" />
+                      <circle cx="28" cy="28" r="2" fill="#FFFFFF" />
+                      <circle cx="40" cy="28" r="2" fill="#FFFFFF" />
+                      <circle cx="52" cy="28" r="2" fill="#FFFFFF" />
+
+                      <line
+                        x1="16"
+                        y1="36"
+                        x2="36"
+                        y2="36"
+                        stroke="#FFFFFF"
+                        stroke-width="2"
+                      />
+                      <line
+                        x1="16"
+                        y1="44"
+                        x2="36"
+                        y2="44"
+                        stroke="#FFFFFF"
+                        stroke-width="2"
+                      />
+                      <rect
+                        x="40"
+                        y="34"
+                        width="8"
+                        height="4"
+                        rx="1"
+                        fill="#FFFFFF"
+                      />
+                      <rect
+                        x="40"
+                        y="42"
+                        width="8"
+                        height="4"
+                        rx="1"
+                        fill="#FFFFFF"
+                      />
+
+                      <circle cx="48" cy="48" r="8" fill="#38A169" />
+                      <line
+                        x1="48"
+                        y1="48"
+                        x2="48"
+                        y2="44"
+                        stroke="#FFFFFF"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                      <line
+                        x1="48"
+                        y1="48"
+                        x2="52"
+                        y2="48"
+                        stroke="#FFFFFF"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg> */}
+                    <FaTasks className="h-5 w-5 text-[#3b5a26] transition duration-75 dark:text-[#3b5a26] group-hover:text-green-900 dark:group-hover:text-white " />
+
+                    <span className="flex-1 ms-3 whitespace-nowrap">
+                      My Activities
+                    </span>
+                    {/* <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-green-800 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-300">
+                      Pro
+                    </span> */}
+                  </Link>
+                </li>
                 <hr />
                 {currentUser.isAdmin && (
                   <div className="flex flex-col">
@@ -294,11 +397,13 @@ export default function Dashboard() {
           {tab === "profile" && <DashProfile />}
           {tab === "addmanure" && <AddManure />}
           {tab === "manuresbyuser" && <DashManure />}
+          {tab === "totalmanures" && <DashTotalManure />}
           {tab === "totalcrops" && <DashCrops />}
           {tab === "totalsoils" && <DashSoils />}
           {tab === "totalfertilizers" && <DashFertilizers />}
           {tab === "totaldiseases" && <DashDiseases />}
           {tab === "totalpesticides" && <DashPesticides />}
+          {tab === "myactivities" && <MyActivities />}
 
           {tab === "addcrops" && <AddCrop />}
           {tab === "addfertilizers" && <AddFertilizers />}
