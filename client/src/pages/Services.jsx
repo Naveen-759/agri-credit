@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import OrganicManure from "../components/OrganicManure";
-import { GiSprout } from "react-icons/gi";
+import { GiPlantWatering, GiSprout } from "react-icons/gi";
 import { FaTractor } from "react-icons/fa";
+import AgricultureIcon from "@mui/icons-material/Agriculture";
+
+import YardIcon from "@mui/icons-material/Yard";
+
 import NurseryManagement from "../components/Nursery/NurseryManagement";
-import TractorManagement from "../components/tractor/Tractor";
+import TractorManagement from "../components/tractor/TractorManagement";
 // import { Tractor } from "";
 
 const Services = () => {
@@ -47,9 +51,9 @@ const Services = () => {
                 to="/services?tab=tractors"
                 className="flex flex-col items-center"
               >
-                <FaTractor className="h-10 w-10 mb-3 text-green-600" />
+                <FaTractor className="h-10 w-10 mb-3 text-red-600" />
 
-                <div className="container4 text-green-600 text-xl font-bold">
+                <div className="container4 text-red-600 text-xl font-bold">
                   Tractor Services
                 </div>
                 <div className="disc text-green-700 mt-2 text-center">
@@ -64,7 +68,7 @@ const Services = () => {
                 to="/services?tab=nurseries"
                 className="flex flex-col items-center"
               >
-                <FaTractor className="h-10 w-10 mb-3 text-green-600" />
+                <GiPlantWatering className="h-10 w-10 mb-3 text-green-600" />
 
                 <div className="container4 text-green-600 text-xl font-bold">
                   Nursery Management
@@ -149,6 +153,30 @@ const Services = () => {
                       Manure
                     </span>
                   </Link>
+                  <Link
+                    to="/services?tab=tractors"
+                    className={`flex items-center p-2 text-green-900 rounded-lg dark:text-white ${
+                      tab === "tractors" ? "bg-green-100 dark:bg-green-700" : ""
+                    } hover:bg-green-100 dark:hover:bg-green-700 group`}
+                  >
+                    <AgricultureIcon className="h-5 w-5  text-red-500  transition duration-75  group-hover:text-red-500 dark:group-hover:text-white " />
+                    <span className="flex-1 ms-3 text-red-500 whitespace-nowrap">
+                      Tractor Management
+                    </span>
+                  </Link>
+                  <Link
+                    to="/services?tab=nurseries"
+                    className={`flex items-center p-2 text-green-900 rounded-lg dark:text-white ${
+                      tab === "nurseries"
+                        ? "bg-green-100 dark:bg-green-700"
+                        : ""
+                    } hover:bg-green-100 dark:hover:bg-green-700 group`}
+                  >
+                    <GiPlantWatering className="h-5 w-5  text-green-600  transition duration-75  group-hover:text-green-600 dark:group-hover:text-white " />
+                    <span className="flex-1 ms-3 text-green-600 whitespace-nowrap">
+                      Nursery Management
+                    </span>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -165,8 +193,6 @@ const Services = () => {
             {tab === "tractors" && <TractorManagement />}
 
             {tab === "nurseries" && <NurseryManagement />}
-
-            {/* {tab === "tractors" && <Tractor />} */}
           </div>
         </>
       )}

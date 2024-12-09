@@ -92,16 +92,6 @@ const AddCrop = ({ crop }) => {
       );
       console.log("Form submitted successfully", res);
       if (res.ok) {
-        // updateSoils(res._id);
-        // const result = await res.json();
-        // setFormData({
-        //   crop_name: "",
-        //   sowing_period: "",
-        //   duration_of_crop: "",
-        //   harvesting_period: "",
-        //   grown_soils: "",
-        //   grown_soils: "",
-        // });
         setImageFile(null);
         e.target.reset();
         navigate("/dashboard?tab=totalcrops");

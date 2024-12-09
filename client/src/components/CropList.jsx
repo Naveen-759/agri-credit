@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { GlobalContext } from "../context/GlobalState";
 
 const CropList = () => {
   const [selectedSoilType, setSelectedSoilType] = useState("");
   const [cropsData, setCrops] = useState([]);
+  const { soilList, getAllSoils } = useContext(GlobalContext);
+
+  useEffect(() => {
+    getAllSoils();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -41,13 +47,13 @@ const CropList = () => {
               onChange={handleSoilTypeChange}
               className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             >
-              <option value="">Select Soil</option>
-              <option value="Alluvial soil">Alluvial Soil</option>
-              <option value="Black soil">Black Soil</option>
-              <option value="Red soil">Red Soil</option>
-              <option value="Loamy soil">Loamy Soil</option>
-              <option value="Sandy loam soil">Sandy loam Soil</option>
-              <option value="Clayey soil">Clayey Soil</option>
+              <option value="">Select Crop Name</option>
+              {soilList &&
+                soilList.map((soil, index) => (
+                  <option key={index} value={soil.soil_type}>
+                    {soil.soil_type}
+                  </option>
+                ))}
             </select>
           </div>
           <button

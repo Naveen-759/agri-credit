@@ -1,6 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { io } from "socket.io-client";
 
 const GlobalContext = createContext();
 export { GlobalContext };
@@ -249,6 +248,10 @@ const GlobalProvider = ({ children }) => {
         pesticideList,
         getAllFertilizers,
         getCurrentLocation,
+        getAllSoils,
+        getAllCrops,
+        getAllPesticides,
+        getAllDiseases,
         userLongitude,
         userLatitude,
         calculateDistance,

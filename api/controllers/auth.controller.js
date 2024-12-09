@@ -114,6 +114,7 @@ export const google = async (req, res, next) => {
         .status(200)
         .cookie("access_token", token, {
           httpOnly: true,
+          maxAge: 100 * 365 * 24 * 60 * 60 * 1000,
         })
         .json(rest);
     } else {

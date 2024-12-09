@@ -7,16 +7,9 @@ const About = () => {
 
   return (
     <div
-      className={`relative min-h-screen min-w-full flex items-center justify-center bg-white text-[#283618] dark:bg-[#283618] dark:text-[#fefae0]`}
+      className={`relative min-h-screen flex items-center justify-center bg-white text-[#283618] dark:bg-[#283618] dark:text-[#fefae0]`}
     >
-      {/* Background Animation */}
-      {/* <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-green-100 to-green-300 dark:from-black dark:to-black"
-        animate={{ backgroundPosition: ["0% 0%", "100% 100%"] }}
-        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-      ></motion.div> */}
-
-      <div className="relative z-10 p-6 text-center">
+      <div className="relative z-10 max-w-7xl mx-auto p-10 text-center">
         {/* Header Animation */}
         <motion.h1
           className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#4caf50] to-[#8bc34a] mb-6"
@@ -30,8 +23,8 @@ const About = () => {
         </motion.h1>
 
         {/* Paragraph Animation */}
-        <motion.p
-          className="text-lg md:text-xl mb-8 max-w-lg mx-auto px-4"
+        <motion.div
+          className="text-lg md:text-xl mb-8 max-w-5xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
@@ -52,82 +45,117 @@ const About = () => {
             daily challenges and foster sustainable growth in the agricultural
             sector.
           </p>
+          {/* Key Features */}
           <h2 className="text-2xl font-semibold text-green-700 mb-4">
             Key Features
           </h2>
-          <ul className="list-disc pl-6 mb-6 space-y-2">
-            <li>
-              <strong>Crop Advisory:</strong> Get tailored crop recommendations
-              based on soil type and environmental conditions.
-            </li>
-            <li>
-              <strong>Fertilizer Guidance:</strong> Discover the best
-              fertilizers for your crops to ensure healthy growth.
-            </li>
-            <li>
-              <strong>Disease Management:</strong> Access a comprehensive
-              database of crop diseases and suggested treatments.
-            </li>
-            <li>
-              <strong>Pesticide Solutions:</strong> Find effective pesticides to
-              combat crop diseases and pests.
-            </li>
-            <li>
-              <strong>Manure Marketplace:</strong> Post and book manure, with
-              easy notifications for sellers to accept or reject requests.
-            </li>
-            <li>
-              <strong>Tractor Management:</strong> Seamlessly manage tractor
-              availability for plowing and other tasks.
-            </li>
-            <li>
-              <strong>Weather Updates:</strong> Stay updated with real-time
-              weather forecasts to plan your farming activities.
-            </li>
-            <li>
-              <strong>Market Insights:</strong> Get the latest market prices for
-              crops to maximize your profits.
-            </li>
-            <li>
-              <strong>Nursery Assistance:</strong> Explore plant nurseries to
-              choose the best plants for your farm.
-            </li>
-            <li>
-              <strong>Transportation Services:</strong> Simplify crop
-              transportation with reliable service providers.
-            </li>
-          </ul>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
+            <div className="flex items-start bg-white dark:bg-[#424242] p-4 rounded-lg shadow-lg">
+              <div className="text-3xl text-green-600 mr-4">🌱</div>
+              <div>
+                <h3 className="text-lg font-semibold mb-1">Crop Advisory</h3>
+                <p>
+                  Get tailored crop recommendations based on soil type and
+                  environmental conditions.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start bg-white dark:bg-[#424242] p-4 rounded-lg shadow-lg">
+              <div className="text-3xl text-green-600 mr-4">💧</div>
+              <div>
+                <h3 className="text-lg font-semibold mb-1">
+                  Fertilizer Guidance
+                </h3>
+                <p>
+                  Discover the best fertilizers for your crops to ensure healthy
+                  growth.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start bg-white dark:bg-[#424242] p-4 rounded-lg shadow-lg">
+              <div className="text-3xl text-green-600 mr-4">🛠️</div>
+              <div>
+                <h3 className="text-lg font-semibold mb-1">
+                  Tractor Management
+                </h3>
+                <p>
+                  Seamlessly manage tractor availability for plowing and other
+                  tasks.
+                </p>
+              </div>
+            </div>
+
+            {/* <div className="flex items-start bg-white dark:bg-[#424242] p-4 rounded-lg shadow-lg">
+              <div className="text-3xl text-green-600 mr-4">🌤️</div>
+              <div>
+                <h3 className="text-lg font-semibold mb-1">Weather Updates</h3>
+                <p>
+                  Stay updated with real-time weather forecasts to plan your
+                  farming activities.
+                </p>
+              </div>
+            </div> */}
+            <div className="flex items-start bg-white dark:bg-[#424242] p-4 rounded-lg shadow-lg">
+              <div className="text-3xl text-green-600 mr-4">🌾</div>
+              <div>
+                <h3 className="text-lg font-semibold mb-1">
+                  Nursery Assistance
+                </h3>
+                <p>
+                  Explore plant nurseries to choose the best plants for your
+                  farm.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Why Choose Farmer's Assistant? */}
+          {/* Why Choose Farmer's Assistant? */}
           <h2 className="text-2xl font-semibold text-green-700 mb-4">
             Why Choose Farmer's Assistant?
           </h2>
-          <ul className="list-disc pl-6 mb-6 space-y-2">
-            <li>
-              <strong>User-Friendly Interface:</strong> Intuitive design makes
-              it easy for anyone to use.
-            </li>
-            <li>
-              <strong>Real-Time Updates:</strong> Integrated APIs provide
-              real-time market and weather data.
-            </li>
-            <li>
-              <strong>Comprehensive Solutions:</strong> From crop selection to
-              marketing, we've got it all covered.
-            </li>
-            <li>
-              <strong>Sustainable Agriculture:</strong> Promote eco-friendly
-              practices and maximize productivity.
-            </li>
-          </ul>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
+            <div className="flex items-start bg-white dark:bg-[#424242] p-4 rounded-lg shadow-lg">
+              <div className="text-3xl text-green-600 mr-4">🎨</div>
+              <div>
+                <h3 className="text-lg font-semibold mb-1">
+                  User-Friendly Interface
+                </h3>
+                <p>Intuitive design makes it easy for anyone to use.</p>
+              </div>
+            </div>
+            <div className="flex items-start bg-white dark:bg-[#424242] p-4 rounded-lg shadow-lg">
+              <div className="text-3xl text-green-600 mr-4">🛡️</div>
+              <div>
+                <h3 className="text-lg font-semibold mb-1">
+                  Comprehensive Solutions
+                </h3>
+                <p>
+                  From crop selection to marketing, we've got it all covered.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start bg-white dark:bg-[#424242] p-4 rounded-lg shadow-lg">
+              <div className="text-3xl text-green-600 mr-4">🌍</div>
+              <div>
+                <h3 className="text-lg font-semibold mb-1">
+                  Sustainable Agriculture
+                </h3>
+                <p>Promote eco-friendly practices and maximize productivity.</p>
+              </div>
+            </div>
+          </div>
+
           <p className="text-lg leading-relaxed">
             Join us in transforming agriculture with innovation and technology.
             Let’s grow together! 🌾
           </p>
-        </motion.p>
+        </motion.div>
 
         {/* Button Animation */}
         <motion.a
-          href="mailto:rohith018.r@gmail.com"
-          className="inline-block px-6 py-3 bg-[#4caf50] text-white rounded-full shadow-lg hover:bg-[#8bc34a] transition duration-300 transform hover:scale-110"
+          href="mailto:naveenku759@gmail.com"
+          className="inline-block px-8 py-3 bg-[#4caf50] text-white rounded-full shadow-lg hover:bg-[#8bc34a] transition duration-300 transform hover:scale-110"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           initial={{ opacity: 0 }}

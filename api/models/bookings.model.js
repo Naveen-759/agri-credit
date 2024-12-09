@@ -6,7 +6,10 @@ const bookingSchema = new mongoose.Schema({
     refPath: "itemType",
     required: true,
   },
-  itemType: { type: String, required: true },
+  itemType: {
+    type: String,
+    required: true,
+  }, // "Tractor" or "Manure"
   requesterId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -19,14 +22,40 @@ const bookingSchema = new mongoose.Schema({
   },
   requested_quantity: {
     type: Number,
-    required: true,
+    required: function () {
+      return this.itemType === "Manure";
+    }, // Required for manure
   },
+  acres: {
+    type: Number,
+    required: function () {
+      return this.itemType === "Tractor" && this.purpose === "Ploughing";
+    }, // Required for ploughing tractors
+  },
+  purpose: {
+    type: String,
+    enum: ["Ploughing", "Load Transport"],
+  },
+  attachment: {
+    type: String,
+    enum: ["Plough", "Harrow", "Rotavator", "Cultivator", null],
+    default: null, // Attachments for tractors
+  },
+  date: {
+    type: Date,
+  },
+  cost: {
+    type: String,
+  }, // Total cost for the booking
   status: {
     type: String,
     enum: ["pending", "accepted", "rejected"],
     default: "pending",
   },
-  createdAt: { type: Date, default: Date.now }, // Timestamp
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  }, // Timestamp
 });
 
 const Booking = mongoose.model("Booking", bookingSchema);

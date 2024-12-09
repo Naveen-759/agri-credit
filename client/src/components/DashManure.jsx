@@ -5,6 +5,7 @@ import { FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../context/GlobalState";
 import AddManure from "./AddManure";
+import { toast } from "react-toastify";
 
 const DashManure = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -24,11 +25,15 @@ const DashManure = () => {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`/api/manures/deletemanure/${id}`, {
+      const res = await fetch(`/api/manures/deletemanure/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
-      getManuresByUser();
+      if (res.ok) {
+        getManuresByUser();
+        navigate("dashboard?tab=manuresbyuser");
+        toast.success("Deleted successfully");
+      }
     } catch (error) {
       console.log(error);
     }

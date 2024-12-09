@@ -9,26 +9,33 @@ import Paper from "@mui/material/Paper";
 import { GiEmptyWoodBucket } from "react-icons/gi";
 import { GlobalContext } from "../context/GlobalState";
 import AddPesticides from "./AddPesticides";
+import { toast } from "react-toastify";
 
 const DashPesticides = () => {
   const [editing, setEditing] = useState(false);
   const [selectedPesticide, setSelectedPesticide] = useState(null);
   const { pesticideList, getAllPesticides } = useContext(GlobalContext);
 
-  //   const handleDelete = async (fertilizerId) => {
-  //     try {
-  //       await fetch(`/api/fertilizers/deletefertilizer/${fertilizerId}`, {
-  //         method: "DELETE",
-  //       });
-  //       getAllFertilizers();
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
+  const handleDelete = async (pesticideId) => {
+    try {
+      const res = await fetch(
+        `/api/pesticides/deletepesticide/${pesticideId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (res.ok) {
+        getAllPesticides();
+        toast.success("Deleted successfuly");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const handleEdit = (fertilizer) => {
+  const handleEdit = (pesticide) => {
     setEditing(true);
-    setSelectedFertilizer(fertilizer);
+    setSelectedPesticide(pesticide);
   };
   return (
     <>

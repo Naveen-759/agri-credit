@@ -9,6 +9,7 @@ import {
 } from "firebase/storage";
 import { GlobalContext } from "../context/GlobalState";
 import { app } from "../firebase";
+import { Navigate } from "react-router-dom";
 
 const AddManure = ({ manure }) => {
   const { userLatitude, userLongitude, getAllManures } =
@@ -85,8 +86,8 @@ const AddManure = ({ manure }) => {
         }
       );
 
+      const result = await res.json();
       if (res.ok) {
-        const result = await res.json();
         setSuccess(true);
         getAllManures();
 
@@ -100,6 +101,7 @@ const AddManure = ({ manure }) => {
           cost: "", // Reset cost
         });
         setImageFile(null);
+        Navigate("/services?tab=manures");
         e.target.reset();
       } else {
         console.error("Failed to submit form");

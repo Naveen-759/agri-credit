@@ -24,9 +24,9 @@ function OrganicManure() {
   const [selectedManure, setSelectedManure] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
 
-  const handleManureClick = (manure) => {
-    setSelectedManure({ ...manure });
-  };
+  // const handleManureClick = (manure) => {
+  //   setSelectedManure({ ...manure });
+  // };
 
   const filteredManureList = manureAdminList.filter((manure) => {
     const matchesType = filter.type
@@ -48,7 +48,8 @@ function OrganicManure() {
     return matchesType && matchesQuantity && matchesDistance;
   });
 
-  const handleRequest = () => {
+  const handleRequest = (manure) => {
+    setSelectedManure(manure);
     setDisplay(true);
   };
 
@@ -57,7 +58,7 @@ function OrganicManure() {
   };
 
   const handleBooking = async () => {
-    if (!selectedManure) return;
+    // if (!selectedManure) return;
 
     const bookingData = {
       itemId: selectedManure._id,
@@ -162,134 +163,90 @@ function OrganicManure() {
       {viewType === "add" && <AddManure />}
       {viewType === "search" && (
         <div className="bg-white p-4 min-w-full rounded shadow-md">
-          {selectedManure ? (
-            <div className="manure-details">
-              <h3 className="text-lg font-semibold content-center">
-                Manure Details
-              </h3>
-              <div className="flex flex-col sm:flex-row-reverse items-center space-x-4 justify-between">
-                <div className="manureimage">
-                  <img
-                    src={selectedManure.manure_img}
-                    alt={selectedManure.type}
-                    className="w-60 h-40 object-cover rounded border border-gray-300"
-                  />
-                </div>
-                <div className="manure-text">
-                  <p>
-                    <strong>Type:</strong> {selectedManure.manure_type}
-                  </p>
-                  <p>
-                    <strong>Quantity:</strong> {selectedManure.quantity}
-                  </p>
-                  <p>
-                    <strong>Description:</strong> {selectedManure.description}
-                  </p>
-                  <p>
-                    <strong>Distance:</strong>{" "}
-                    {calculateDistance(
-                      userLatitude,
-                      userLongitude,
-                      selectedManure.manure_lat,
-                      selectedManure.manure_long
-                    )}{" "}
-                    km
-                  </p>
-                  <div className="flex space-x-2 mt-4">
-                    {/* Check if the current user is not the one who posted the manure */}
-                    {currentUser._id !== selectedManure.posted_by._id &&
-                      (selectedManure.quantity === 0 ? (
-                        <p className="text-red-600 font-semibold">
-                          Out of stock
-                        </p>
-                      ) : (
-                        <button
-                          onClick={handleRequest}
-                          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                        >
-                          Request
-                        </button>
-                      ))}
-                    {/* Close button */}
-                    <button
-                      onClick={() => setSelectedManure(null)}
-                      className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-                    >
-                      Close
-                    </button>
-                  </div>
-                </div>
-              </div>
-              {display && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                  <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
-                    <h2 className="text-xl font-bold mb-4">
-                      Enter Required Quantity
-                    </h2>
-                    <input
-                      type="number"
-                      placeholder="Enter the quantity of manure required"
-                      value={newQuantity}
-                      onChange={(e) => setNewQuantity(Number(e.target.value))}
-                      className="w-full p-2 border rounded mb-4"
-                    />
-                    <p className="mb-4">
-                      Total Cost: ₹{newQuantity * selectedManure.cost_per_kg}
-                    </p>
-                    <div className="flex justify-end gap-4">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredManureList.map((manure) => (
+              <li
+                key={manure._id}
+                className="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-all cursor-pointer"
+                // onClick={() => handleManureClick(manure)}
+              >
+                <img
+                  src={manure.manure_img}
+                  alt={manure.type}
+                  className="w-full h-40 object-cover rounded mb-4"
+                />
+                <h3 className="text-lg font-semibold text-gray-700">
+                  {manure.manure_type}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Quantity: {manure.quantity} kg
+                </p>
+                <p className="text-sm text-gray-500">
+                  Distance:{" "}
+                  {calculateDistance(
+                    userLatitude,
+                    userLongitude,
+                    manure.manure_lat,
+                    manure.manure_long
+                  )}{" "}
+                  km
+                </p>
+                <p className="text-sm text-gray-500">
+                  Cost: ₹{manure.cost_per_kg} per kg
+                </p>
+                <p>
+                  <strong>Description:</strong> {manure.description}
+                </p>
+                <div className="flex space-x-2 mt-4">
+                  {/* Check if the current user is not the one who posted the manure */}
+                  {currentUser._id !== manure.posted_by._id &&
+                    (manure.quantity === 0 ? (
+                      <p className="text-red-600 font-semibold">Out of stock</p>
+                    ) : (
                       <button
-                        onClick={handleBooking}
+                        onClick={() => handleRequest(manure)}
                         className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                       >
-                        Confirm
+                        Request
                       </button>
-                      <button
-                        onClick={handleCancel}
-                        className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-                      >
-                        Cancel
-                      </button>
+                    ))}
+                </div>
+                {display && (
+                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
+                      <h2 className="text-xl font-bold mb-4">
+                        Enter Required Quantity
+                      </h2>
+                      <input
+                        type="number"
+                        placeholder="Enter the quantity of manure required"
+                        value={newQuantity}
+                        onChange={(e) => setNewQuantity(Number(e.target.value))}
+                        className="w-full p-2 border rounded mb-4"
+                      />
+                      <p className="mb-4">
+                        Total Cost: ₹{newQuantity * manure.cost_per_kg}
+                      </p>
+                      <div className="flex justify-end gap-4">
+                        <button
+                          onClick={handleBooking}
+                          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          onClick={handleCancel}
+                          className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredManureList.map((manure) => (
-                <li
-                  key={manure._id}
-                  className="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-all cursor-pointer"
-                  onClick={() => handleManureClick(manure)}
-                >
-                  <img
-                    src={manure.manure_img}
-                    alt={manure.type}
-                    className="w-full h-40 object-cover rounded mb-4"
-                  />
-                  <h3 className="text-lg font-semibold text-gray-700">
-                    {manure.manure_type}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Quantity: {manure.quantity} kg
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Distance:{" "}
-                    {calculateDistance(
-                      userLatitude,
-                      userLongitude,
-                      manure.manure_lat,
-                      manure.manure_long
-                    )}{" "}
-                    km
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Cost: ₹{manure.cost_per_kg} per kg
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

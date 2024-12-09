@@ -9,6 +9,7 @@ import Paper from "@mui/material/Paper";
 import { GiEmptyWoodBucket } from "react-icons/gi";
 import { GlobalContext } from "../context/GlobalState";
 import AddFertilizers from "./AddFertilizers";
+import { toast } from "react-toastify";
 
 const DashFertilizers = () => {
   const [editing, setEditing] = useState(false);
@@ -17,10 +18,16 @@ const DashFertilizers = () => {
 
   const handleDelete = async (fertilizerId) => {
     try {
-      await fetch(`/api/fertilizers/deletefertilizer/${fertilizerId}`, {
-        method: "DELETE",
-      });
-      getAllFertilizers();
+      const res = await fetch(
+        `/api/fertilizers/deletefertilizer/${fertilizerId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (res.ok) {
+        getAllFertilizers();
+        toast.success("Fertilizer deleted successfully");
+      }
     } catch (error) {
       console.log(error);
     }

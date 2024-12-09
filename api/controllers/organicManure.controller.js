@@ -76,14 +76,14 @@ export const deleteManure = async (req, res) => {
       return;
     }
 
-    res.json({ message: "Manure deleted successfully", manure });
+    res.json(manure);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to delete manure" });
   }
 };
 
-export const updateManure = async (req, res ) => {
+export const updateManure = async (req, res) => {
   const { manure_type, quantity, cost, address, manure_img, description } =
     req.body;
 

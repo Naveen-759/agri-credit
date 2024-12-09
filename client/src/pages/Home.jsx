@@ -143,9 +143,9 @@ const Home = () => {
                       "M8 6L12 2l4 4M12 2v10.3a4 4 0 0 1-1.172 2.872L4 22m16-4l-5-5",
                   },
                   {
-                    title: "AI- assisted Disease detection",
+                    title: "One - One Manure and Tractor Management",
                     description:
-                      "Upload the damaged crop image and know the disease.",
+                      "Providers will provide the maured ot tractors and the farmers can use them",
                     color: "#e76f51",
                     iconPath:
                       "M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5zM18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1",

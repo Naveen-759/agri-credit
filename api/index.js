@@ -11,6 +11,8 @@ import soilRoutes from "./routes/soil.route.js";
 import diseaseRoutes from "./routes/disease.route.js";
 import pesticideRoutes from "./routes/pesticide.route.js";
 import bookingRoutes from "./routes/booking-route.js";
+import tractorRoutes from "./routes/tractor.route.js";
+import nurseryRoutes from "./routes/nursery.route.js";
 
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -76,6 +78,8 @@ app.use("/api/diseases", diseaseRoutes);
 app.use("/api/pesticides", pesticideRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/soils", soilRoutes);
+app.use("/api/tractors", tractorRoutes);
+app.use("/api/nursery", nurseryRoutes);
 
 // app.use(express.static(path.join(__dirname, "/client/dist")));
 

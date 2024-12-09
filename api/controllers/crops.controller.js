@@ -146,4 +146,19 @@ export const addCrop = async (req, res) => {
   }
 };
 
+export const getCrop = async (req, res) => {
+  const { crop_name } = req.query;
+
+  try {
+    const crop = await Crops.find({ crop_name: crop_name });
+    if (crop.length > 0) {
+      return res.json(crop);
+    } else {
+      return res.json([]);
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Error fetching crop data" });
+  }
+};
+
 // export default { getCrops };

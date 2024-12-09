@@ -9,6 +9,7 @@ import Paper from "@mui/material/Paper";
 import { GiEmptyWoodBucket } from "react-icons/gi";
 import { GlobalContext } from "../context/GlobalState";
 import AddDiseases from "./AddDiseases";
+import { toast } from "react-toastify";
 
 const DashDiseases = () => {
   const [editing, setEditing] = useState(false);
@@ -16,16 +17,19 @@ const DashDiseases = () => {
   const { diseaseList, getAllDiseases } = useContext(GlobalContext);
   console.log(diseaseList);
 
-  //   const handleDelete = async (fertilizerId) => {
-  //     try {
-  //       await fetch(`/api/fertilizers/deletefertilizer/${fertilizerId}`, {
-  //         method: "DELETE",
-  //       });
-  //       getAllFertilizers();
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
+  const handleDelete = async (diseaseId) => {
+    try {
+      const res = await fetch(`/api/diseases/deletedisease/${diseaseId}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        getAllDiseases();
+        toast.success("Deleted successfully");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleEdit = (disease) => {
     setEditing(true);

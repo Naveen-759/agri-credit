@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
-const TractorRegistrationForm = () => {
+const AddTractor = () => {
   const [formData, setFormData] = useState({
     tractorBrand: "",
     modelNumber: "",
@@ -21,14 +22,36 @@ const TractorRegistrationForm = () => {
     setFormData({ ...formData, attachments: values });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData); // Handle form submission logic here
-    alert("Form submitted successfully!");
+
+    try {
+      const response = await fetch("/api/tractors/addtractor", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(data);
+
+        toast.success("Tractor registered successfully!");
+        // Optionally reset form data or navigate to another page
+      } else {
+        toast.error(data.message || "Failed to register tractor");
+      }
+    } catch (error) {
+      console.error("Error registering tractor:", error);
+      toast.error("An error occurred. Please try again.");
+    }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-green-200 via-white to-green-100">
+    <div className="flex justify-center items-center min-h-screen ">
       <form
         className="w-full max-w-lg bg-white rounded-lg shadow-lg p-6 space-y-4"
         onSubmit={handleSubmit}
@@ -149,22 +172,41 @@ const TractorRegistrationForm = () => {
           >
             Attachments Available
           </label>
-          <select
-            name="attachments"
-            id="attachments"
-            multiple
-            value={formData.attachments}
-            onChange={handleAttachmentsChange}
-            className="w-full p-2 mt-1 border rounded-md focus:ring-green-500 focus:border-green-500"
-            required
-          >
-            <option value="Plough">Plough</option>
-            <option value="Harrow">Harrow</option>
-            <option value="Rotavator">Rotavator</option>
-            <option value="Cultivator">Cultivator</option>
-          </select>
+          <div id="attachments" className="space-y-2 mt-1">
+            {["Plough", "Harrow", "Rotavator", "Cultivator"].map(
+              (attachment) => (
+                <div key={attachment} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={attachment}
+                    name="attachments"
+                    value={attachment}
+                    onChange={(e) => {
+                      const { checked, value } = e.target;
+                      setFormData((prevFormData) => ({
+                        ...prevFormData,
+                        attachments: checked
+                          ? [...prevFormData.attachments, value]
+                          : prevFormData.attachments.filter(
+                              (item) => item !== value
+                            ),
+                      }));
+                    }}
+                    checked={formData.attachments.includes(attachment)}
+                    className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor={attachment}
+                    className="ml-2 block text-sm text-gray-700"
+                  >
+                    {attachment}
+                  </label>
+                </div>
+              )
+            )}
+          </div>
           <p className="text-xs text-gray-500 mt-1">
-            Hold Ctrl (or Cmd on Mac) to select multiple attachments.
+            Select all applicable attachments.
           </p>
         </div>
 
@@ -182,4 +224,4 @@ const TractorRegistrationForm = () => {
   );
 };
 
-export default TractorRegistrationForm;
+export default AddTractor;

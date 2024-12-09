@@ -1,3 +1,4 @@
+import { json } from "express";
 import CropFertilizer from "../models/cropFertilizers.model.js";
 import Fertilizers from "../models/fertilizers.model.js";
 
@@ -29,30 +30,82 @@ export const getAllFertilizers = async (req, res) => {
   }
 };
 
-export const createFertilizer = async (req, res) => {
-  {
-    try {
-      const ferti = await Fertilizers.create({
-        fertilizer_name: req.body.fertilizer_name,
-        application_rate: req.body.application_rate,
-        growing_season: req.body.growing_season,
-        physical_form: req.body.physical_form,
-        storage_condition: req.body.storage_condition,
-        safety_caution: req.body.safety_caution,
-        img_url: req.body.img_url,
-      });
-      console.log(ferti);
-    } catch (error) {
-      console.log(error);
-    }
+export const deleteFertilizer = async (req, res) => {
+  try {
+    const response = await Fertilizers.findByIdAndDelete(
+      req.params.fertilizerId
+    );
+    res.json(response);
+  } catch (err) {
+    console.log(err);
   }
 };
 
-export const deleteFertilizer = async (req, res) => {
+export const updateFertilizer = async (req, res) => {
   try {
-    await Fertilizers.findByIdAndDelete(req.params.fertilizerId);
-    
-  } catch (err) {
-    console.log(err);
+    const updatedFertilizer = await Fertilizers.findByIdAndUpdate(
+      req.params.fertilizerId,
+      {
+        $set: {
+          fertilizer_name: req.body.fertilizer_name,
+          application_rate: req.body.application_rate,
+          physical_form: req.body.physical_form,
+          storage_condition: req.body.storage_condition,
+          safety_caution: req.body.safety_caution,
+          img_url: req.body.img_url,
+        },
+      },
+      { new: true }
+    );
+    return res.status(200).json(updatedFertilizer);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const addFertilizer = async (req, res) => {
+  const {
+    fertilizer_name,
+    application_rate,
+    physical_form,
+    storage_condition,
+    safety_caution,
+    img_url,
+  } = req.body;
+
+  try {
+    // Check for mandatory fields
+    if (
+      !fertilizer_name ||
+      !application_rate ||
+      !physical_form ||
+      !storage_condition ||
+      !safety_caution ||
+      !img_url
+    ) {
+      return res.status(400).json({ message: "All fields are mandatory" });
+    }
+
+    // Check if the crop already exists
+    const check = await Fertilizers.findOne({ fertilizer_name });
+    if (check) {
+      return res.json({ message: "Fertilizer already exists" });
+    }
+
+    // Create the new crop
+    const fertilizer = await Fertilizers.create({
+      fertilizer_name,
+      application_rate,
+      physical_form,
+      storage_condition,
+      safety_caution,
+      img_url,
+    });
+    console.log("fertilizer added", fertilizer);
+
+    res.status(200).json(fertilizer);
+  } catch (error) {
+    console.error(`Error adding crop: ${error.message}`);
+    res.status(500).json({ message: "Server error" });
   }
 };

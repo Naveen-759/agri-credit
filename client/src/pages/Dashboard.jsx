@@ -31,11 +31,11 @@ import DashFertilizers from "../components/DashFertilizers";
 import DashDiseases from "../components/DashDiseases";
 import DashPesticides from "../components/DashPesticides";
 import MyActivities from "../components/MyActivities";
+import AddTractor from "../components/tractor/AddTractor";
 
 export default function Dashboard() {
   const location = useLocation();
   const [tab, setTab] = useState("dash"); // Default tab to 'dash'
-  const [manureList, setManureList] = useState([]);
   const { currentUser, error, loading } = useSelector((state) => state.user);
   const [sidebar, setSidebar] = useState(true);
   const dispatch = useDispatch();
@@ -66,7 +66,7 @@ export default function Dashboard() {
 
   return (
     <div className=" flex flex-col min-h-screen content-center md:flex-row bg-white ">
-      <div className={`${!sidebar ? "min-w-full" : "md:w-80"} bg-white`}>
+      <div className={`${sidebar ? "md:w-80" : ""} bg-white`}>
         {/* Sidebar */}
         <motion.div
           initial={{ x: -250 }}
@@ -107,7 +107,7 @@ export default function Dashboard() {
             <div className="h-full px-3 py-20 overflow-y-auto bg-green-50 dark:bg-green-800">
               <div
                 onClick={() => setSidebar(false)}
-                className="flex float-end  rounded-2xl p-2 text-green-700 font-bold cursor-pointer hover:bg-green-500 hover:text-white sm:sr-only "
+                className="flex float-end  rounded-2xl p-2 text-green-700 font-bold cursor-pointer hover:bg-green-500 hover:text-white  "
               >
                 X
               </div>
@@ -159,96 +159,11 @@ export default function Dashboard() {
                       tab === "croplist" ? "bg-green-100 dark:bg-green-700" : ""
                     } hover:bg-green-100 dark:hover:bg-green-700 group`}
                   >
-                    {/* <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 64 64"
-                      width="25"
-                      height="25"
-                      fill="none"
-                    >
-                      <rect
-                        x="8"
-                        y="12"
-                        width="48"
-                        height="44"
-                        rx="4"
-                        fill="#68D391"
-                      />
-                      <rect
-                        x="8"
-                        y="12"
-                        width="48"
-                        height="8"
-                        rx="4"
-                        fill="#38A169"
-                      />
-
-                      <circle cx="16" cy="28" r="2" fill="#FFFFFF" />
-                      <circle cx="28" cy="28" r="2" fill="#FFFFFF" />
-                      <circle cx="40" cy="28" r="2" fill="#FFFFFF" />
-                      <circle cx="52" cy="28" r="2" fill="#FFFFFF" />
-
-                      <line
-                        x1="16"
-                        y1="36"
-                        x2="36"
-                        y2="36"
-                        stroke="#FFFFFF"
-                        stroke-width="2"
-                      />
-                      <line
-                        x1="16"
-                        y1="44"
-                        x2="36"
-                        y2="44"
-                        stroke="#FFFFFF"
-                        stroke-width="2"
-                      />
-                      <rect
-                        x="40"
-                        y="34"
-                        width="8"
-                        height="4"
-                        rx="1"
-                        fill="#FFFFFF"
-                      />
-                      <rect
-                        x="40"
-                        y="42"
-                        width="8"
-                        height="4"
-                        rx="1"
-                        fill="#FFFFFF"
-                      />
-
-                      <circle cx="48" cy="48" r="8" fill="#38A169" />
-                      <line
-                        x1="48"
-                        y1="48"
-                        x2="48"
-                        y2="44"
-                        stroke="#FFFFFF"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                      />
-                      <line
-                        x1="48"
-                        y1="48"
-                        x2="52"
-                        y2="48"
-                        stroke="#FFFFFF"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                      />
-                    </svg> */}
                     <FaTasks className="h-5 w-5 text-[#3b5a26] transition duration-75 dark:text-[#3b5a26] group-hover:text-green-900 dark:group-hover:text-white " />
 
                     <span className="flex-1 ms-3 whitespace-nowrap">
                       My Activities
                     </span>
-                    {/* <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-green-800 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-300">
-                      Pro
-                    </span> */}
                   </Link>
                 </li>
                 <hr />
@@ -315,9 +230,9 @@ export default function Dashboard() {
                         </span>
                       </Link>
                     </li>
+                    <br />
                   </div>
                 )}
-                <hr />
                 <div className="flex flex-col">
                   <p className="p-3 font-bold">Agri Services</p>
                   <li>
@@ -396,6 +311,8 @@ export default function Dashboard() {
         >
           {tab === "profile" && <DashProfile />}
           {tab === "addmanure" && <AddManure />}
+          {tab === "addtractor" && <AddTractor />}
+
           {tab === "manuresbyuser" && <DashManure />}
           {tab === "totalmanures" && <DashTotalManure />}
           {tab === "totalcrops" && <DashCrops />}

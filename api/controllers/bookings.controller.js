@@ -45,49 +45,6 @@ export const getBookingsByUser = async (req, res) => {
   }
 };
 
-// export const acceptRequest = async (req, res) => {
-//   // console.log(req.body);
-//   const io = req.app.get("io");
-
-//   try {
-//     // Validate the request ID
-//     if (!mongoose.Types.ObjectId.isValid(req.params.bookingId)) {
-//       return res.status(400).json({ error: "Invalid booking ID" });
-//     }
-
-//     // Find and update the booking status to 'accepted'
-//     const updatedBooking = await Booking.findByIdAndUpdate(
-//       { _id: req.params.bookingId },
-//       { $set: { status: "accepted" } },
-//       { new: true } // Return the updated document
-//     );
-
-//     // Handle case where the booking does not exist
-//     if (!updatedBooking) {
-//       return res.status(404).json({ error: "Booking not found" });
-//     }
-
-//     updateManureByBooking(
-//       updatedBooking.itemId,
-//       updatedBooking.requested_quantity
-//     );
-
-//     io.emit("bookingUpdated", updatedBooking);
-
-//     // Send success response
-//     res.status(200).json({
-//       message: "Booking status updated to accepted successfully.",
-//       booking: updatedBooking,
-//     });
-//   } catch (error) {
-//     // Handle unexpected errors
-//     res.status(500).json({
-//       error: "An error occurred while accepting the booking.",
-//       details: error.message,
-//     });
-//   }
-// };
-
 export const acceptRequest = async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.bookingId)) {
@@ -110,7 +67,7 @@ export const acceptRequest = async (req, res) => {
     );
 
     // Notify clients about the updated booking
-    io.emit("bookingUpdated", updatedBooking);
+    // io.emit("bookingUpdated", updatedBooking);
 
     res.status(200).json({
       message: "Booking status updated successfully.",
@@ -154,7 +111,7 @@ const updateManureByBooking = async (manureId, new_quantity) => {
 export const rejectRequest = async (req, res) => {
   try {
     // Validate the request ID
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    if (!mongoose.Types.ObjectId.isValid(req.params.bookingId)) {
       return res.status(400).json({ error: "Invalid booking ID" });
     }
 
@@ -187,6 +144,65 @@ export const rejectRequest = async (req, res) => {
 export const getAllBookings = async (req, res) => {
   try {
     const response = await Booking.find({});
+    res.json(response);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const tractorBooking = async (req, res) => {
+  const {
+    itemId,
+    itemType,
+    requesterId,
+    providerId,
+    date,
+    purpose,
+    attachment,
+    acres,
+    cost,
+  } = req.body;
+  if (
+    !itemId ||
+    !itemType ||
+    !requesterId ||
+    !providerId ||
+    !date ||
+    !purpose ||
+    !attachment ||
+    !acres ||
+    !cost
+  ) {
+    res.json("All fields are mandatory");
+  }
+
+  try {
+    const booking = await Booking.create({
+      itemId,
+      itemType,
+      requesterId,
+      providerId,
+      date,
+      purpose,
+      attachment,
+      acres,
+      cost,
+    });
+    console.log(booking);
+
+    res.json(booking);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteBooking = async (req, res) => {
+  try {
+    const response = await Booking.findByIdAndDelete(req.params.bookingId);
+    if (!response) {
+      res.status(400);
+      res.json("Booking doesn.t exist");
+    }
     res.json(response);
   } catch (error) {
     console.log(error);

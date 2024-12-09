@@ -58,7 +58,7 @@ export default function Header() {
         )} */}
 
         {/* Theme: dark or light */}
-        <div
+        {/* <div
           className="w-10 h-10 flex items-center justify-center p-2 rounded-full bg-green-100 dark:bg-green-700 cursor-pointer transition-transform transform hover:scale-105 hover:bg-green-100 dark:hover:bg-green-600 shadow-md"
           onClick={() => dispatch(toggleTheme())}
         >
@@ -67,7 +67,7 @@ export default function Header() {
           ) : (
             <LuMoon className="text-3xl text-gray-800 dark:text-blue-400" />
           )}
-        </div>
+        </div> */}
 
         {/* Dropdown Navbar */}
         {currentUser ? (
@@ -125,6 +125,7 @@ export default function Header() {
         >
           About
         </Navbar.Link>
+
         <Navbar.Link
           as={Link}
           to="/agrihelp"
