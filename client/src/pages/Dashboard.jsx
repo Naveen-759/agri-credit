@@ -32,6 +32,7 @@ import DashDiseases from "../components/DashDiseases";
 import DashPesticides from "../components/DashPesticides";
 import MyActivities from "../components/MyActivities";
 import AddTractor from "../components/tractor/AddTractor";
+import NurseryCropList from "../components/Nursery/NurseryCropList";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -312,6 +313,7 @@ export default function Dashboard() {
           {tab === "profile" && <DashProfile />}
           {tab === "addmanure" && <AddManure />}
           {tab === "addtractor" && <AddTractor />}
+          {tab === "tab=nurserylist" && <NurseryCropList />}
 
           {tab === "manuresbyuser" && <DashManure />}
           {tab === "totalmanures" && <DashTotalManure />}

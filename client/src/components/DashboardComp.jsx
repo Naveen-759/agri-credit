@@ -1,9 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { FaSeedling, FaHeartbeat, FaSyringe } from "react-icons/fa";
+import { FaSeedling, FaHeartbeat, FaSyringe, FaTractor } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { GiSprout, GiFertilizerBag } from "react-icons/gi";
+import { GiSprout, GiFertilizerBag, GiSeedling } from "react-icons/gi";
 import { GlobalContext } from "../context/GlobalState";
+// import YardOutlinedIcon from "@mui/icons-material/YardOutlined";
+// import { FiLeaf } from "react-icons/fi";
+import { GiCarnivorousPlant } from "react-icons/gi";
 
 export default function DashboardComp() {
   const { currentUser } = useSelector((state) => state.user);
@@ -28,18 +31,44 @@ export default function DashboardComp() {
     <div className="p-6 md:mx-auto max-w-screen-lg">
       <div className="grid grid-cols-1 md:grid-rows-1 gap-6">
         {!currentUser.isAdmin ? (
-          <Link to="/dashboard?tab=manuresbyuser">
-            <div className="flex justify-between items-center p-6 bg-[#f3c9aa] rounded-lg shadow-lg border border-gray-200  ">
-              <GiSprout className="flex items-center justify-center w-16 h-16 text-[#422006] rounded-full bg-white p-2" />
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                {" "}
-                Manures posted by you
-              </h3>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                {manureList.length}
-              </p>
-            </div>
-          </Link>
+          <div className="flex flex-col gap-3">
+            <Link to="/dashboard?tab=manuresbyuser">
+              <div className="flex justify-between items-center p-6 bg-[#f3c9aa] rounded-lg shadow-lg border border-gray-200  ">
+                <GiSprout className="flex items-center justify-center w-16 h-16 text-[#422006] rounded-full bg-white p-2" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  {" "}
+                  Manures posted by you
+                </h3>
+                <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                  {manureList.length}
+                </p>
+              </div>
+            </Link>
+            <Link to="/dashboard?tab=manuresbyuser">
+              <div className="flex justify-between items-center p-6 bg-[#f7aca9] rounded-lg shadow-lg border border-gray-200  ">
+                <FaTractor className="flex items-center justify-center w-16 h-16 text-[#d9534f] rounded-full bg-white p-2" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  {" "}
+                  Tractors registered by you
+                </h3>
+                <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                  {manureList.length}
+                </p>
+              </div>
+            </Link>
+            <Link to="/dashboard?tab=manuresbyuser">
+              <div className="flex justify-between items-center p-6 bg-[#80f476] rounded-lg shadow-lg border border-gray-200  ">
+                <GiCarnivorousPlant className="flex items-center justify-center w-16 h-16 text-green-700 rounded-full bg-white p-2" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  {" "}
+                  Nurseries registered by you
+                </h3>
+                <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                  {manureList.length}
+                </p>
+              </div>
+            </Link>
+          </div>
         ) : (
           <>
             <div className="flex flex-col justify-center items-center">
@@ -180,7 +209,7 @@ export default function DashboardComp() {
                     </p>
                   </div>
                 </Link>
-                <Link to="/dashboard?tab=manuresbyuser">
+                <Link to="/dashboard?tab=nurserylist">
                   <div className="flex justify-between items-center p-6 bg-[#f69b98] rounded-lg shadow-lg border border-gray-200 gap-4 ">
                     <FaHeartbeat className="flex items-center justify-center w-16 h-16 text-[#d9534f] rounded-full bg-white p-2" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -192,7 +221,7 @@ export default function DashboardComp() {
                     </p>
                   </div>
                 </Link>
-                <Link to="/dashboard?tab=manuresbyuser">
+                {/* <Link to="/dashboard?tab=manuresbyuser">
                   <div className="flex justify-between items-center p-6 bg-[#99c4f3] rounded-lg shadow-lg border border-gray-200 gap-4 ">
                     <FaSyringe className="flex items-center justify-center w-16 h-16 text-[#007bff] rounded-full bg-white p-2" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -203,7 +232,7 @@ export default function DashboardComp() {
                       {pesticideList.length}
                     </p>
                   </div>
-                </Link>
+                </Link> */}
               </div>
             </div>
           </>

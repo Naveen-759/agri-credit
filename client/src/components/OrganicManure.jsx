@@ -3,6 +3,14 @@ import AddManure from "./AddManure";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { GlobalContext } from "../context/GlobalState";
+import EditIcon from "@mui/icons-material/Edit";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPaperPlane,
+  faSort,
+  faSortUp,
+  faSortDown,
+} from "@fortawesome/free-solid-svg-icons";
 
 function OrganicManure() {
   const {
@@ -15,19 +23,24 @@ function OrganicManure() {
   const [viewType, setViewType] = useState("search");
   const [btn, setBtn] = useState("search");
   const [display, setDisplay] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  // const [selectedManure, setSelectedManure] = useState(null); // Holds selected manure
+
   const [newQuantity, setNewQuantity] = useState(0);
+  const [displaySort, setDisplaySort] = useState(false);
   const [filter, setFilter] = useState({
     type: "",
     minQuantity: 0,
     maxDistance: 0,
   });
+  const [sorting, setSorting] = useState({
+    field: null,
+    order: "asc",
+  });
   const [selectedManure, setSelectedManure] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
 
-  // const handleManureClick = (manure) => {
-  //   setSelectedManure({ ...manure });
-  // };
-
+  // Filtering logic remains the same
   const filteredManureList = manureAdminList.filter((manure) => {
     const matchesType = filter.type
       ? manure.manure_type.toLowerCase().includes(filter.type.toLowerCase())
@@ -48,6 +61,63 @@ function OrganicManure() {
     return matchesType && matchesQuantity && matchesDistance;
   });
 
+  // Sorting function
+  const sortManureList = (list) => {
+    if (!sorting.field) return list;
+
+    return [...list].sort((a, b) => {
+      let valA, valB;
+      switch (sorting.field) {
+        case "type":
+          valA = a.manure_type;
+          valB = b.manure_type;
+          return sorting.order === "asc"
+            ? valA.localeCompare(valB)
+            : valB.localeCompare(valA);
+
+        case "distance":
+          valA = calculateDistance(
+            userLatitude,
+            userLongitude,
+            a.manure_lat,
+            a.manure_long
+          );
+          valB = calculateDistance(
+            userLatitude,
+            userLongitude,
+            b.manure_lat,
+            b.manure_long
+          );
+          return sorting.order === "asc" ? valA - valB : valB - valA;
+
+        case "quantity":
+          return sorting.order === "asc"
+            ? a.quantity - b.quantity
+            : b.quantity - a.quantity;
+
+        case "cost":
+          return sorting.order === "asc"
+            ? a.cost_per_kg - b.cost_per_kg
+            : b.cost_per_kg - a.cost_per_kg;
+
+        default:
+          return 0;
+      }
+    });
+  };
+
+  // Sort the filtered list
+  const sortedManureList = sortManureList(filteredManureList);
+
+  // Sorting handler
+  const handleSort = (field) => {
+    setSorting((prev) => ({
+      field: field,
+      order: prev.field === field && prev.order === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  // Rest of the existing component logic remains the same...
   const handleRequest = (manure) => {
     setSelectedManure(manure);
     setDisplay(true);
@@ -58,14 +128,12 @@ function OrganicManure() {
   };
 
   const handleBooking = async () => {
-    // if (!selectedManure) return;
-
     const bookingData = {
       itemId: selectedManure._id,
       itemType: "Manure",
       requesterId: currentUser._id,
       providerId: selectedManure.posted_by._id,
-      quantity: newQuantity, // Include the new quantity in the booking request
+      quantity: newQuantity,
     };
 
     try {
@@ -93,82 +161,75 @@ function OrganicManure() {
   return (
     <div className="min-h-screen flex flex-col items-center p-6 bg-white">
       <h1 className="text-4xl font-bold text-green-800 mb-4">Organic Manure</h1>
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
-        <div className="w-full sm:w-auto flex justify-between">
-          {btn === "add" ? (
-            <button
-              onClick={() => {
-                setViewType("search");
-                setBtn("search");
-                getAllManures();
-              }}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow-lg transition duration-300"
-            >
-              Go Back
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                setViewType("add");
-                setBtn("add");
-              }}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow-lg transition duration-300"
-            >
-              Add Manure
-            </button>
-          )}
-        </div>
-        {viewType === "search" && !selectedManure && (
-          <div className="flex flex-wrap gap-4 justify-center w-full sm:w-auto mt-4 sm:mt-0">
-            <select
-              className="border border-green-400 p-2 rounded bg-green-50 text-green-900 shadow-sm focus:outline-none focus:ring focus:ring-green-300"
-              value={filter.type}
-              onChange={(e) => setFilter({ ...filter, type: e.target.value })}
-            >
-              <option value="">All Types</option>
-              <option value="Compost">Compost</option>
-              <option value="Vermicompost">Vermicompost</option>
-              <option value="Green Manure">Green Manure</option>
-            </select>
-            <select
-              className="border border-green-400 p-2 rounded bg-green-50 text-green-900 shadow-sm focus:outline-none focus:ring focus:ring-green-300"
-              value={filter.minQuantity}
-              onChange={(e) =>
-                setFilter({ ...filter, minQuantity: Number(e.target.value) })
-              }
-            >
-              <option value={0}>All Quantities</option>
-              <option value={10}>10 kg and above</option>
-              <option value={50}>50 kg and above</option>
-              <option value={100}>100 kg and above</option>
-              <option value={500}>500 kg and above</option>
-            </select>
-            <select
-              className="border border-green-400 p-2 rounded bg-green-50 text-green-900 shadow-sm focus:outline-none focus:ring focus:ring-green-300"
-              value={filter.maxDistance}
-              onChange={(e) =>
-                setFilter({ ...filter, maxDistance: Number(e.target.value) })
-              }
-            >
-              <option value={0}>All Distances</option>
-              <option value={10}>Up to 10 km</option>
-              <option value={20}>Up to 20 km</option>
-              <option value={50}>Up to 50 km</option>
-              <option value={100}>Up to 100 km</option>
-            </select>
-          </div>
-        )}
-      </div>
 
       {viewType === "add" && <AddManure />}
+      {isEditing && <AddManure manure={selectedManure} />}
+
       {viewType === "search" && (
-        <div className="bg-white p-4 min-w-full rounded shadow-md">
+        <div className="bg-white p-2 min-w-full rounded shadow-md">
+          {/* Sorting Headers */}
+          <div className="flex content-between items-center">
+            <button className="bg-green-600 text-white p-2 rounded mb-6">
+              Add Manure
+            </button>
+            <div className="flex gap-4  ml-6 items-center mb-6">
+              <span className="text-sm sm:text-base font-medium text-gray-700">
+                Sort By:
+              </span>
+              {/* Dropdown for sorting options */}
+              <div className="relative">
+                <button
+                  className="flex items-center bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all"
+                  aria-haspopup="true"
+                  aria-expanded={display ? "true" : "false"} // Toggles the dropdown visibility
+                  onClick={() => setDisplaySort(!displaySort)} // Toggles display state on button click
+                >
+                  <span>
+                    {sorting.field
+                      ? sorting.field.charAt(0).toUpperCase() +
+                        sorting.field.slice(1)
+                      : "Select Option"}
+                  </span>
+                  <FontAwesomeIcon icon={faSort} size="sm" className="ml-2" />
+                </button>
+
+                {/* Dropdown Menu */}
+                {displaySort && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-lg">
+                    {[
+                      { label: "Type", field: "type" },
+                      { label: "Distance", field: "distance" },
+                      { label: "Quantity", field: "quantity" },
+                      { label: "Cost per kg", field: "cost" },
+                    ].map(({ label, field }) => (
+                      <button
+                        key={field}
+                        onClick={() => handleSort(field)} // Calls the sorting function
+                        className="flex items-center justify-between w-full px-4 py-2 text-left text-gray-700 hover:bg-green-100 focus:outline-none transition-all"
+                      >
+                        <span>{label}</span>
+                        {sorting.field === field ? (
+                          sorting.order === "asc" ? (
+                            <FontAwesomeIcon icon={faSortUp} size="sm" />
+                          ) : (
+                            <FontAwesomeIcon icon={faSortDown} size="sm" />
+                          )
+                        ) : (
+                          <FontAwesomeIcon icon={faSort} size="sm" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredManureList.map((manure) => (
+            {sortedManureList.map((manure) => (
               <li
                 key={manure._id}
                 className="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-all cursor-pointer"
-                // onClick={() => handleManureClick(manure)}
               >
                 <img
                   src={manure.manure_img}
@@ -199,51 +260,70 @@ function OrganicManure() {
                 </p>
                 <div className="flex space-x-2 mt-4">
                   {/* Check if the current user is not the one who posted the manure */}
-                  {currentUser._id !== manure.posted_by._id &&
-                    (manure.quantity === 0 ? (
+                  {currentUser._id !== manure.posted_by._id ? (
+                    manure.quantity === 0 ? (
                       <p className="text-red-600 font-semibold">Out of stock</p>
                     ) : (
-                      <button
-                        onClick={() => handleRequest(manure)}
-                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                      >
-                        Request
-                      </button>
-                    ))}
-                </div>
-                {display && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
-                      <h2 className="text-xl font-bold mb-4">
-                        Enter Required Quantity
-                      </h2>
-                      <input
-                        type="number"
-                        placeholder="Enter the quantity of manure required"
-                        value={newQuantity}
-                        onChange={(e) => setNewQuantity(Number(e.target.value))}
-                        className="w-full p-2 border rounded mb-4"
-                      />
-                      <p className="mb-4">
-                        Total Cost: ₹{newQuantity * manure.cost_per_kg}
-                      </p>
-                      <div className="flex justify-end gap-4">
+                      <>
                         <button
-                          onClick={handleBooking}
+                          onClick={() => handleRequest(manure)}
                           className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                         >
-                          Confirm
+                          {/* <RequestPageIcon /> */}
+                          <FontAwesomeIcon icon={faPaperPlane} /> Request
                         </button>
-                        <button
-                          onClick={handleCancel}
-                          className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                        {display && (
+                          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10">
+                            <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
+                              <h2 className="text-xl font-bold mb-4">
+                                Enter Required Quantity
+                              </h2>
+                              <input
+                                type="number"
+                                placeholder="Enter the quantity of manure required"
+                                value={newQuantity}
+                                onChange={(e) =>
+                                  setNewQuantity(Number(e.target.value))
+                                }
+                                className="w-full p-2 border rounded mb-4"
+                              />
+                              <p className="mb-4">
+                                Total Cost: ₹{newQuantity * manure.cost_per_kg}
+                              </p>
+                              <div className="flex justify-end gap-4">
+                                <button
+                                  onClick={handleBooking}
+                                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                                >
+                                  Confirm
+                                </button>
+                                <button
+                                  onClick={handleCancel}
+                                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )
+                  ) : (
+                    <button
+                      onClick={() => handleRequest(manure)}
+                      className="flex items-center justify-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring focus:ring-green-300"
+                    >
+                      <EditIcon className="w-4 h-4" />
+                      <span
+                        className="font-medium"
+                        onClick={() => setIsEditing(true)}
+                      >
+                        Edit
+                      </span>
+                    </button>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
