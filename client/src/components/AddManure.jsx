@@ -9,10 +9,11 @@ import {
 } from "firebase/storage";
 import { GlobalContext } from "../context/GlobalState";
 import { app } from "../firebase";
-import { Navigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AddManure = ({ manure }) => {
-  const { userLatitude, userLongitude, getAllManures } =
+  const { userLatitude, userLongitude, getAllManures, selectedManure } =
     useContext(GlobalContext);
   const { currentUser } = useSelector((state) => state.user);
 
@@ -33,6 +34,7 @@ const AddManure = ({ manure }) => {
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
   const [imageFileUploading, setImageFileUploading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (imageFile) {
@@ -90,6 +92,7 @@ const AddManure = ({ manure }) => {
       if (res.ok) {
         setSuccess(true);
         getAllManures();
+        toast.success(` Manure ${manure ? "updated" : "added"} successfully`);
 
         setFormData({
           manure_type: "selectmanure",
@@ -101,7 +104,7 @@ const AddManure = ({ manure }) => {
           cost: "", // Reset cost
         });
         setImageFile(null);
-        Navigate("/services?tab=manures");
+        navigate("/services?tab=manures");
         e.target.reset();
       } else {
         console.error("Failed to submit form");
@@ -120,15 +123,26 @@ const AddManure = ({ manure }) => {
 
   return (
     <>
-      {manure ? (
-        <h1 className="flex bg-yellow-500 rounded w-36 items-center justify-center h-10 text-white">
-          Update Manure
-        </h1>
-      ) : (
-        <h1 className="flex bg-yellow-500 rounded w-36 items-center justify-center h-10 text-white">
-          Add Manure
-        </h1>
-      )}
+      <div className="p-4 flex flex-row content-center items-center gap-2">
+        {manure ? (
+          <h1 className="mt-4  text-green-700 font-bold py-2 px-4 rounded-full w-full max-w-xs mx-auto block shadow-md">
+            Update Manure
+          </h1>
+        ) : (
+          <>
+            <h1 className="mt-4 text-2xl text-green-700 font-bold py-2 px-4 rounded-full w-full max-w-xs mx-auto block ">
+              Add Manure
+            </h1>
+            <button
+              onClick={() => navigate("/services?tab=manures")}
+              className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full w-full max-w-xs mx-auto block shadow-md"
+            >
+              Go Back
+            </button>
+          </>
+        )}
+      </div>
+
       <form
         onSubmit={handleForm}
         className="space-y-4 min-w-full mb-4 bg-white p-4 rounded shadow-md"
@@ -269,7 +283,7 @@ const AddManure = ({ manure }) => {
         >
           {manure ? "Update Manure" : "Add Manure"}
         </button>
-        {success && <Alert severity="success">Manure added Successfully</Alert>}
+        {/* {success && <Alert severity="success">Manure added Successfully</Alert>} */}
       </form>
     </>
   );

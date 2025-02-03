@@ -43,30 +43,9 @@ const corsOptions = {
 };
 app.use(cors());
 
-const server = app.listen(3000, () => {
+app.listen(3000, () => {
   console.log("Server is running on Port 3000");
 });
-
-import { Server } from "socket.io";
-
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173", // Allow requests from your frontend
-    methods: ["GET", "POST"],
-  },
-});
-
-// Listen for incoming socket connections
-io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
-
-  // Handle disconnection
-  socket.on("disconnect", () => {
-    console.log("A user disconnected:", socket.id);
-  });
-});
-
-export { io };
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
@@ -81,11 +60,11 @@ app.use("/api/soils", soilRoutes);
 app.use("/api/tractors", tractorRoutes);
 app.use("/api/nursery", nurseryRoutes);
 
-// app.use(express.static(path.join(__dirname, "/client/dist")));
+app.use(express.static(path.join(__dirname, "/client/dist")));
 
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
-// });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

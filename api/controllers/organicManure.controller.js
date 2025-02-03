@@ -1,3 +1,4 @@
+import Booking from "../models/bookings.model.js";
 import Manure from "../models/organicManure.model.js";
 
 export const addManure = async (req, res) => {
@@ -75,6 +76,11 @@ export const deleteManure = async (req, res) => {
       res.status(400).json({ error: "Manure doesn't exist" });
       return;
     }
+    await Booking.updateMany(
+      { itemId: req.params.manureId },
+      { $set: { itemSnapshot: manure.toObject() } } // Store a snapshot
+    );
+    // console.log(manure);
 
     res.json(manure);
   } catch (error) {

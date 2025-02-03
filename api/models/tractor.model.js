@@ -47,10 +47,6 @@ const TractorSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    cost: {
-      type: Number,
-      required: true,
-    },
   },
   { timestamps: true }
 );

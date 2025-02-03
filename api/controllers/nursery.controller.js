@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Nursery from "../models/nursery.model.js"; // Adjust import based on your file structure
 import NurseryCrop from "../models/nurseryCrop.model.js";
 
@@ -10,14 +11,6 @@ export const createNursery = async (req, res) => {
     if (!user_id || !name || !place || !ownerName || !mobile || !plantTypes) {
       return res.status(400).json({ message: "All fields are required" });
     }
-
-    // Validate the mobile number format
-    // if (!isValidPhoneNumber(mobile, "IN")) {
-    //   // Replace 'IN' with the country code if needed
-    //   return res.status(400).json({ message: "Invalid mobile number" });
-    // }
-
-    // Check if the nursery with the same mobile already exists
     const existingNursery = await Nursery.findOne({ where: { mobile } });
     if (existingNursery) {
       return res
@@ -63,7 +56,7 @@ export const getAllNurseries = async (req, res) => {
 // Controller to get a single nursery by ID
 export const getNurseryById = async (req, res) => {
   try {
-    const nursery = await Nursery.findById(req.params.id);
+    const nursery = await Nursery.findById(req.params.id).populate("user_id");
 
     if (!nursery) {
       return res.status(404).json({ message: "Nursery not found" });
@@ -101,7 +94,7 @@ export const updateNursery = async (req, res) => {
 // Controller to delete a nursery by ID
 export const deleteNursery = async (req, res) => {
   try {
-    const nursery = await Nursery.findByIdAndDelete(req.params.id);
+    const nursery = await Nursery.findByIdAndDelete(req.params.nurseryId);
 
     if (!nursery) {
       return res.status(404).json({ message: "Nursery not found" });
@@ -156,8 +149,6 @@ export const addNurseryCrop = async (req, res) => {
       costPerCrop,
     });
 
-    // Save to database
-    // const savedCrop = await newCrop.save();
     console.log(newCrop);
 
     res.status(201).json(newCrop);
@@ -170,27 +161,86 @@ export const addNurseryCrop = async (req, res) => {
 };
 
 export const getCropsByNursery = async (req, res) => {
-  // const { nurseryId } = req.params; // Extract nursery ID from the request params
-
   try {
-    // Find crops associated with the given nursery ID
     console.log("Logging the get one", req.params.nurseryId);
+    if (!mongoose.Types.ObjectId.isValid(req.params.nurseryId)) {
+      return res.status(400).json({ error: "Invalid nursery ID" });
+    }
 
-    const crops = await NurseryCrop.find({ nursery: req.params.nurseryId });
-
-    // // Check if crops exist for the given nursery
-    // if (!crops || crops.length === 0) {
-    //   return res
-    //     .status(404)
-    //     .json({ success: false, message: "No crops found for this nursery." });
-    // }
-
-    // Respond with the list of crops
+    const crops = await NurseryCrop.find({
+      nursery: new mongoose.Types.ObjectId(req.params.nurseryId),
+    });
     res.status(200).json(crops);
   } catch (error) {
     console.error("Error fetching crops:", error);
     res
       .status(500)
       .json({ success: false, message: "Failed to fetch crops.", error });
+  }
+};
+
+export const updateCrop = async (req, res) => {
+  try {
+    const {
+      name,
+      category,
+      growingSeason,
+      soilType,
+      description,
+      imageURL,
+      quantityAvailable,
+      costPerCrop,
+    } = req.body;
+
+    const crop = await NurseryCrop.findByIdAndUpdate(
+      req.params.cropId,
+      {
+        name,
+        category,
+        growingSeason,
+        soilType,
+        description,
+        imageURL,
+        quantityAvailable,
+        costPerCrop,
+      },
+      { new: true }
+    );
+
+    if (!crop) {
+      return res.status(404).json({ message: "Crop not found" });
+    }
+
+    res.status(200).json(crop);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const getNurseriesByUser = async (req, res) => {
+  try {
+    const response = await Nursery.find({ user_id: req.params.userId });
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Error fetching Nurseries:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch Nurseries.", error });
+  }
+};
+
+export const deleteCrop = async (req, res) => {
+  try {
+    const crop = await NurseryCrop.findByIdAndDelete(req.params.cropId);
+
+    if (!crop) {
+      return res.status(404).json({ message: "Crop not found" });
+    }
+
+    res.status(200).json({ message: "Crop deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
   }
 };

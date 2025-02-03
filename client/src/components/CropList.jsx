@@ -47,7 +47,7 @@ const CropList = () => {
               onChange={handleSoilTypeChange}
               className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             >
-              <option value="">Select Crop Name</option>
+              <option value="">Select Soil Type</option>
               {soilList &&
                 soilList.map((soil, index) => (
                   <option key={index} value={soil.soil_type}>

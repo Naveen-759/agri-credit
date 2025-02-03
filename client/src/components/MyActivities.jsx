@@ -1,10 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { GlobalContext } from "../context/GlobalState";
-import { AiOutlineEye } from "react-icons/ai";
 import { toast } from "react-toastify";
-
-import socket from "../utils/Socket";
 
 const MyActivities = () => {
   const {
@@ -21,24 +18,6 @@ const MyActivities = () => {
 
   useEffect(() => {
     getBookingsByUser();
-  }, []);
-
-  useEffect(() => {
-    socket.connect();
-
-    socket.on("bookingUpdated", (updatedBooking) => {
-      toast.info(`Booking updated: ${updatedBooking.itemId.manure_type}`);
-      setBookings((prevBookings) =>
-        prevBookings.map((booking) =>
-          booking._id === updatedBooking._id ? updatedBooking : booking
-        )
-      );
-    });
-
-    return () => {
-      socket.disconnect();
-      socket.off("bookingUpdated");
-    };
   }, []);
 
   const acceptRequest = (booking) => {
@@ -108,7 +87,7 @@ const MyActivities = () => {
         toast.success("Booking rejected successfully!");
         getBookingsByUser();
       }
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error(
         "Error rejecting booking:",
@@ -124,6 +103,11 @@ const MyActivities = () => {
         <h1 className="font-bold text-green-500 text-2xl mb-10">
           Your Bookings
         </h1>
+        {bookingsList.length === 0 && (
+          <p className="text-center text-gray-500">
+            You don't have any booking records
+          </p>
+        )}
 
         {bookingsList &&
           bookingsList.map((booking) => (
@@ -138,7 +122,9 @@ const MyActivities = () => {
                   {booking.itemType === "Manure" && (
                     <div className="flex flex-col gap-4 sm:flex-1">
                       <h1 className="text-2xl font-semibold text-green-800">
-                        {booking.itemId.manure_type}
+                        {!booking.itemId
+                          ? booking.itemSnapshot.manure_type
+                          : booking.itemId.manure_type}
                       </h1>
                       <p className="text-sm text-gray-700">
                         <span className="font-semibold text-green-700">
@@ -150,15 +136,21 @@ const MyActivities = () => {
                         <span className="font-semibold text-green-800">
                           Address:{" "}
                         </span>
-                        {booking.itemId.address}
+                        {!booking.itemId
+                          ? booking.itemSnapshot.address
+                          : booking.itemId.address}
                       </p>
                       <p className="text-gray-700">
                         <span className="font-semibold text-green-800">
                           Distance:{" "}
                         </span>
                         {calculateDistance(
-                          booking.itemId.manure_lat,
-                          booking.itemId.manure_long,
+                          !booking.itemId
+                            ? booking.itemSnapshot.manure_lat
+                            : booking.itemId.manure_lat,
+                          !booking.itemId
+                            ? booking.itemSnapshot.manure_long
+                            : booking.itemId.manure_long,
                           userLatitude,
                           userLongitude
                         )}
@@ -182,9 +174,43 @@ const MyActivities = () => {
                     </div>
                   )}
 
+                  {booking.itemType === "NurseryCrop" && (
+                    <div className="flex flex-col gap-4 sm:flex-1">
+                      <h1 className="text-2xl font-semibold text-green-800">
+                        {!booking.itemId
+                          ? booking.itemSnapshot.name
+                          : booking.itemId.name}
+                      </h1>
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold text-green-700">
+                          Quantity:{" "}
+                        </span>
+                        {booking.requested_quantity}
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold text-green-700">
+                          Status:{" "}
+                        </span>
+                        {booking.status}
+                      </p>
+                      {booking.status === "pending" &&
+                        booking.requesterId._id === currentUser._id && (
+                          <button
+                            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all"
+                            onClick={() => handleCancel(booking._id)}
+                          >
+                            Cancel Request
+                          </button>
+                        )}
+                    </div>
+                  )}
+                  {/* {console.log(booking)} */}
+
                   {booking.itemType === "Tractor" && (
                     <div className="flex flex-col gap-4 sm:flex-1">
                       <h1 className="text-2xl font-semibold text-green-800">
+                        {/* {console.log(booking.itemId.tractorBrand)} */}
+
                         {booking.itemId.tractorBrand}
                       </h1>
                       <p className="text-sm text-gray-700">
@@ -236,6 +262,15 @@ const MyActivities = () => {
                         </span>
                         {booking.status}
                       </p>
+                      {booking.status === "pending" &&
+                        booking.requesterId._id === currentUser._id && (
+                          <button
+                            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all"
+                            onClick={() => handleCancel(booking._id)}
+                          >
+                            Cancel Request
+                          </button>
+                        )}
                     </div>
                   )}
 

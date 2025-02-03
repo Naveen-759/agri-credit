@@ -11,6 +11,7 @@ import {
   faSortUp,
   faSortDown,
 } from "@fortawesome/free-solid-svg-icons";
+import { Link, useNavigate } from "react-router-dom";
 
 function OrganicManure() {
   const {
@@ -20,7 +21,7 @@ function OrganicManure() {
     manureAdminList,
     getAllManures,
   } = useContext(GlobalContext);
-  const [viewType, setViewType] = useState("search");
+  const [viewType, setViewType] = useState(true);
   const [btn, setBtn] = useState("search");
   const [display, setDisplay] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -39,6 +40,7 @@ function OrganicManure() {
   });
   const [selectedManure, setSelectedManure] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   // Filtering logic remains the same
   const filteredManureList = manureAdminList.filter((manure) => {
@@ -120,7 +122,15 @@ function OrganicManure() {
   // Rest of the existing component logic remains the same...
   const handleRequest = (manure) => {
     setSelectedManure(manure);
+    setIsEditing(true);
+    setViewType(false);
+    // setDisplay(true);
+  };
+  const handleSendRequest = (manure) => {
+    setSelectedManure(manure);
     setDisplay(true);
+    // setViewType(false);
+    // setDisplay(true);
   };
 
   const handleCancel = () => {
@@ -131,8 +141,8 @@ function OrganicManure() {
     const bookingData = {
       itemId: selectedManure._id,
       itemType: "Manure",
-      requesterId: currentUser._id,
-      providerId: selectedManure.posted_by._id,
+      requesterId: currentUser?._id, // Using optional chaining
+      providerId: selectedManure?.posted_by?._id, // Avoid crash if undefined
       quantity: newQuantity,
     };
 
@@ -144,17 +154,20 @@ function OrganicManure() {
         body: JSON.stringify(bookingData),
       });
 
+      const responseData = await res.json(); // Read server response
+
       if (res.ok) {
         toast.success(
-          `Request sent to the provider of ${selectedManure.manure_type}`
+          `Request sent to the provider of ${selectedManure.manure_type}. Check the status in the "My Activities" section in the dashboard.`
         );
+        navigate("/dashboard?tab=myactivities");
         setDisplay(false);
       } else {
-        throw new Error("Failed to send request");
+        throw new Error(responseData?.message || "Failed to send request"); // Use server error message
       }
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to request manure");
+      console.error("Booking error:", error.message);
+      toast.error(error.message || "Failed to request manure");
     }
   };
 
@@ -162,16 +175,28 @@ function OrganicManure() {
     <div className="min-h-screen flex flex-col items-center p-6 bg-white">
       <h1 className="text-4xl font-bold text-green-800 mb-4">Organic Manure</h1>
 
-      {viewType === "add" && <AddManure />}
+      {/* {viewType === "add" && (
+        <Link to="/services?tab=addmanure">
+          <AddManure />
+        </Link>
+      )} */}
       {isEditing && <AddManure manure={selectedManure} />}
 
-      {viewType === "search" && (
+      {viewType && (
         <div className="bg-white p-2 min-w-full rounded shadow-md">
           {/* Sorting Headers */}
           <div className="flex content-between items-center">
-            <button className="bg-green-600 text-white p-2 rounded mb-6">
-              Add Manure
-            </button>
+            <Link to="/dashboard?tab=addmanure">
+              <button
+                className="bg-green-600 text-white p-2 rounded mb-6"
+                // onClick={() => {
+                //   console.log("yes i am");
+                // }}
+              >
+                Add Manure
+              </button>
+            </Link>
+
             <div className="flex gap-4  ml-6 items-center mb-6">
               <span className="text-sm sm:text-base font-medium text-gray-700">
                 Sort By:
@@ -266,7 +291,7 @@ function OrganicManure() {
                     ) : (
                       <>
                         <button
-                          onClick={() => handleRequest(manure)}
+                          onClick={() => handleSendRequest(manure)}
                           className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                         >
                           {/* <RequestPageIcon /> */}
@@ -315,12 +340,7 @@ function OrganicManure() {
                       className="flex items-center justify-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring focus:ring-green-300"
                     >
                       <EditIcon className="w-4 h-4" />
-                      <span
-                        className="font-medium"
-                        onClick={() => setIsEditing(true)}
-                      >
-                        Edit
-                      </span>
+                      <span className="font-medium">Edit</span>
                     </button>
                   )}
                 </div>

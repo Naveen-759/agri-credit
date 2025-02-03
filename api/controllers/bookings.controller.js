@@ -1,10 +1,7 @@
 import mongoose from "mongoose";
 import Booking from "../models/bookings.model.js";
 import Manure from "../models/organicManure.model.js";
-
-import { io } from "../index.js";
-
-import { updateManure } from "./organicManure.controller.js";
+import NurseryCrop from "../models/nurseryCrop.model.js";
 
 export const newBooking = async (req, res) => {
   const { itemId, itemType, requesterId, providerId, quantity } = req.body;
@@ -61,10 +58,12 @@ export const acceptRequest = async (req, res) => {
       return res.status(404).json({ error: "Booking not found" });
     }
 
-    updateManureByBooking(
-      updatedBooking.itemId,
-      updatedBooking.requested_quantity
-    );
+    // if( updatedBooking.itemType === "OrganicManure" ) {
+    updateItemByBooking(updatedBooking);
+    // if( updatedBooking.itemType === "NurseryCrop" ) {updateCropByBooking(
+    //   updatedBooking.itemId,
+    //   updatedBooking.requested_quantity
+    // );
 
     // Notify clients about the updated booking
     // io.emit("bookingUpdated", updatedBooking);
@@ -78,33 +77,54 @@ export const acceptRequest = async (req, res) => {
   }
 };
 
-const updateManureByBooking = async (manureId, new_quantity) => {
+const updateItemByBooking = async (booking) => {
   try {
-    // Find the manure by its ID
-    const manure = await Manure.findById(manureId);
+    console.log(booking);
 
-    if (!manure) {
-      console.log("Manure not found");
-      return { error: "Manure not found" };
+    // Fetch the item based on its type
+    let item;
+    if (booking.itemType === "OrganicManure") {
+      item = await Manure.findById(booking.itemId);
+    } else if (booking.itemType === "NurseryCrop") {
+      item = await NurseryCrop.findById(booking.itemId);
+    }
+
+    if (!item) {
+      console.log("Item not found");
+      return { error: "Item not found" };
     }
 
     // Ensure new quantity does not exceed available quantity
-    if (new_quantity > manure.quantity) {
-      console.log("Insufficient quantity available");
-      return { error: "Insufficient quantity available" };
-    }
+    const newQuantity = booking.requested_quantity; // Ensure new_quantity is from booking
+    // if (newQuantity > item.quantity) {
+    //   console.log("Insufficient quantity available");
+    //   return { error: "Insufficient quantity available" };
+    // }
 
     // Update the quantity
-    const updatedManure = await Manure.findByIdAndUpdate(
-      manureId,
-      { $set: { quantity: manure.quantity - new_quantity } },
-      { new: true }
-    );
+    let updatedItem;
+    if (booking.itemType === "OrganicManure") {
+      updatedItem = await Manure.findByIdAndUpdate(
+        booking.itemId,
+        { $set: { quantity: item.quantity - newQuantity } },
+        { new: true }
+      );
+    } else if (booking.itemType === "NurseryCrop") {
+      updatedItem = await NurseryCrop.findByIdAndUpdate(
+        booking.itemId,
+        { $set: { quantityAvailable: item.quantityAvailable - newQuantity } },
+        { new: true }
+      );
+    }
+    console.log(item.quantityAvailable, newQuantity);
+    console.log(item.quantityAvailable - newQuantity);
 
-    return updatedManure; // Return the updated manure object
+    console.log(updatedItem, "updatedItem--------------------------");
+
+    return updatedItem; // Return the updated item
   } catch (error) {
     console.log(error);
-    return { error: "Failed to update manure quantity" };
+    return { error: "Failed to update item quantity" };
   }
 };
 
@@ -204,6 +224,38 @@ export const deleteBooking = async (req, res) => {
       res.json("Booking doesn.t exist");
     }
     res.json(response);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const cropBooking = async (req, res) => {
+  const { itemId, itemType, requesterId, providerId, quantity, cost } =
+    req.body;
+  if (
+    !itemId ||
+    !itemType ||
+    !requesterId ||
+    !providerId ||
+    !quantity ||
+    !cost
+  ) {
+    res.json("All fields are mandatory");
+  }
+
+  try {
+    const booking = await Booking.create({
+      itemId,
+      itemType,
+      requesterId,
+      providerId,
+      requested_quantity: quantity,
+      cost,
+    });
+    console.log(booking);
+    console.log(booking);
+
+    res.json(booking);
   } catch (error) {
     console.log(error);
   }

@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useContext } from "react";
 import AgricultureIcon from "@mui/icons-material/Agriculture";
 import { useSelector } from "react-redux";
+import { GlobalContext } from "../../context/GlobalState";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const TractorManagement = ({ userId }) => {
   const [availableTractors, setAvailableTractors] = useState([]);
@@ -14,6 +16,8 @@ const TractorManagement = ({ userId }) => {
   const [acres, setAcres] = useState(0);
   const [cost, setCost] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
+  const { calculateDistance, userLatitude, userLongitude } =
+    useContext(GlobalContext);
 
   const attachmentCostsPerAcre = {
     Plough: 500,
@@ -22,6 +26,7 @@ const TractorManagement = ({ userId }) => {
     Cultivator: 600,
   };
   console.log(availableTractors);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getTractors();
@@ -44,7 +49,7 @@ const TractorManagement = ({ userId }) => {
     setIsBookingModalOpen(true);
   };
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
     console.log(selectedTractor);
 
     const bookingDetails = {
@@ -61,13 +66,22 @@ const TractorManagement = ({ userId }) => {
     console.log("Booking Details:", bookingDetails);
     // Call API to save booking details
     try {
-      const res = fetch("/api/bookings/tractorbooking", {
+      const res = await fetch("/api/bookings/tractorbooking", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(bookingDetails),
       });
+      console.log(res);
+
+      if (res.ok) {
+        toast.success(
+          `Check your bookings for status at "My Activities in Dashboard"`
+        );
+        navigate("/dashboard?tab=myactivities");
+        console.log("Booking successful");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -90,57 +104,75 @@ const TractorManagement = ({ userId }) => {
 
   return (
     <div className=" min-h-full p-4">
-      <h2 className="text-2xl font-bold text-green-800 mb-6">
+      {/* <div className="flex items-center justify-center min-h-[50vh]"> */}
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-800 mb-6 text-center">
         Tractor Management
       </h2>
+      {/* </div> */}
+
       <div>
         {/* Check if the user is adding a tractor */}
         {!isAdding ? (
           <div>
             {/* Add Tractor Button */}
-            <div className="mb-6">
-              <button
-                onClick={() => setIsAdding(true)}
-                className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 focus:ring focus:ring-blue-300 transition-all"
-              >
-                Add Tractor
-              </button>
+            <div className="mb-6 flex flex-wrap gap-3 justify-center sm:justify-start">
+              <Link to="/dashboard?tab=addtractor">
+                <button className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 focus:ring focus:ring-green-300 transition-all">
+                  Add Tractor
+                </button>
+              </Link>
+              <Link to="/dashboard?tab=managetractor">
+                <button className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 focus:ring focus:ring-green-300 transition-all">
+                  Manage your Tractor
+                </button>
+              </Link>
             </div>
 
             {/* List of Available Tractors */}
             <div className="py-6">
               {availableTractors?.length > 0 ? (
                 <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {availableTractors.map((tractor) => (
-                    <li
-                      key={tractor._id}
-                      className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-1 hover:scale-105"
-                    >
-                      <div className="flex flex-col items-center">
-                        <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-                          <AgricultureIcon className="text-green-500 w-8 h-8" />
+                  {availableTractors.map((tractor) =>
+                    tractor.available ? (
+                      <li
+                        key={tractor._id}
+                        className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-1 hover:scale-105"
+                      >
+                        <div className="flex flex-col items-center">
+                          <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                            <AgricultureIcon className="text-green-500 w-8 h-8" />
+                          </div>
+                          <h3 className="text-lg font-semibold text-gray-800">
+                            {tractor.tractorBrand}
+                          </h3>
+                          <p className="text-sm text-gray-600 mt-2">
+                            Engine Capacity:{" "}
+                            <span className="font-medium">
+                              {tractor.engineCapacity} HP
+                            </span>
+                          </p>
+                          <p>
+                            {calculateDistance(
+                              userLatitude,
+                              userLongitude,
+                              tractor.tractor_lat,
+                              tractor.tractor_long
+                            )}{" "}
+                            km away
+                          </p>
+                          {/* Booking Button */}
+                          {!(tractor.userId._id === currentUser._id) && (
+                            <button
+                              onClick={() => handleBookingClick(tractor)}
+                              className="mt-4 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 focus:ring focus:ring-green-300 transition-all"
+                            >
+                              Book Now
+                            </button>
+                          )}
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-800">
-                          {tractor.tractorBrand}
-                        </h3>
-                        <p className="text-sm text-gray-600 mt-2">
-                          Engine Capacity:{" "}
-                          <span className="font-medium">
-                            {tractor.engineCapacity} HP
-                          </span>
-                        </p>
-                        {/* Booking Button */}
-                        {!(tractor.userId._id === currentUser._id) && (
-                          <button
-                            onClick={() => handleBookingClick(tractor)}
-                            className="mt-4 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 focus:ring focus:ring-green-300 transition-all"
-                          >
-                            Book Now
-                          </button>
-                        )}
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    ) : null
+                  )}
                 </ul>
               ) : (
                 <p className="text-gray-600">

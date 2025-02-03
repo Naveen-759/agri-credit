@@ -148,7 +148,7 @@ export default function Pesticides() {
                 key={pesticide.pesticide_id._id}
                 className="p-6 bg-green-50 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
               >
-                <div className="flex items-center space-x-6">
+                <div className="flex flex-col items-center space-x-6 sm:flex sm:flex-row">
                   <img
                     src={pesticide.pesticide_id.imageURL}
                     alt={pesticide.pesticide_id.pesticide_name}

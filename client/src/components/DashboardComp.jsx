@@ -4,8 +4,6 @@ import { FaSeedling, FaHeartbeat, FaSyringe, FaTractor } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { GiSprout, GiFertilizerBag, GiSeedling } from "react-icons/gi";
 import { GlobalContext } from "../context/GlobalState";
-// import YardOutlinedIcon from "@mui/icons-material/YardOutlined";
-// import { FiLeaf } from "react-icons/fi";
 import { GiCarnivorousPlant } from "react-icons/gi";
 
 export default function DashboardComp() {
@@ -19,6 +17,10 @@ export default function DashboardComp() {
     pesticideList,
     manureList,
     getManuresByUser,
+    tractors,
+    tractorsByUser,
+    nurseries,
+    nurseriesByUser,
   } = useContext(GlobalContext);
 
   useEffect(() => {
@@ -44,7 +46,7 @@ export default function DashboardComp() {
                 </p>
               </div>
             </Link>
-            <Link to="/dashboard?tab=manuresbyuser">
+            <Link to="/dashboard?tab=yourtractors">
               <div className="flex justify-between items-center p-6 bg-[#f7aca9] rounded-lg shadow-lg border border-gray-200  ">
                 <FaTractor className="flex items-center justify-center w-16 h-16 text-[#d9534f] rounded-full bg-white p-2" />
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -52,11 +54,11 @@ export default function DashboardComp() {
                   Tractors registered by you
                 </h3>
                 <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                  {manureList.length}
+                  {tractorsByUser.length}
                 </p>
               </div>
             </Link>
-            <Link to="/dashboard?tab=manuresbyuser">
+            <Link to="/dashboard?tab=nurseriesbyuser">
               <div className="flex justify-between items-center p-6 bg-[#80f476] rounded-lg shadow-lg border border-gray-200  ">
                 <GiCarnivorousPlant className="flex items-center justify-center w-16 h-16 text-green-700 rounded-full bg-white p-2" />
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -64,7 +66,7 @@ export default function DashboardComp() {
                   Nurseries registered by you
                 </h3>
                 <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                  {manureList.length}
+                  {nurseriesByUser.length}
                 </p>
               </div>
             </Link>
@@ -197,7 +199,7 @@ export default function DashboardComp() {
                     </p>
                   </div>
                 </Link>
-                <Link to="/dashboard?tab=manuresbyuser">
+                <Link to="/dashboard?tab=alltractor">
                   <div className="flex justify-between items-center p-6 bg-[#c1f0ac] rounded-lg shadow-lg border border-gray-200 gap-4 ">
                     <GiFertilizerBag className="flex items-center justify-center w-16 h-16 text-[#4c8f2e] rounded-full bg-white p-2" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -205,19 +207,21 @@ export default function DashboardComp() {
                       Total Tractors in database
                     </h3>
                     <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                      {fertilizerList.length}
+                      {tractors.length}
                     </p>
                   </div>
                 </Link>
-                <Link to="/dashboard?tab=nurserylist">
+                <Link to="/dashboard?tab=nurseries">
                   <div className="flex justify-between items-center p-6 bg-[#f69b98] rounded-lg shadow-lg border border-gray-200 gap-4 ">
                     <FaHeartbeat className="flex items-center justify-center w-16 h-16 text-[#d9534f] rounded-full bg-white p-2" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       {" "}
                       Total Nurseries in database
                     </h3>
+                    {/* {console.log(nurseries)} */}
+
                     <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                      {diseaseList.length}
+                      {nurseries.length}
                     </p>
                   </div>
                 </Link>

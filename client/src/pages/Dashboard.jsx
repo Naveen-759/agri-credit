@@ -33,12 +33,18 @@ import DashPesticides from "../components/DashPesticides";
 import MyActivities from "../components/MyActivities";
 import AddTractor from "../components/tractor/AddTractor";
 import NurseryCropList from "../components/Nursery/NurseryCropList";
+import AddNurseryForm from "../components/Nursery/AddNurseryForm";
+import ManageTractors from "../components/tractor/ManageTractors";
+import DashTotalTractors from "../components/tractor/DashTotalTractors";
+import DashTractor from "../components/DashTractor";
+import DashTotalNursery from "../components/Nursery/DashTotalNurseries";
+import DashNursery from "../components/Nursery/DashNursery";
 
 export default function Dashboard() {
   const location = useLocation();
   const [tab, setTab] = useState("dash"); // Default tab to 'dash'
   const { currentUser, error, loading } = useSelector((state) => state.user);
-  const [sidebar, setSidebar] = useState(true);
+  const [sidebar, setSidebar] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -313,9 +319,18 @@ export default function Dashboard() {
           {tab === "profile" && <DashProfile />}
           {tab === "addmanure" && <AddManure />}
           {tab === "addtractor" && <AddTractor />}
-          {tab === "tab=nurserylist" && <NurseryCropList />}
+          {tab === "addnursery" && <AddNurseryForm />}
+          {tab === "managetractor" && <ManageTractors />}
+          {tab === "alltractor" && <DashTotalTractors />}
+          {tab === "yourtractors" && <DashTractor />}
+
+          {tab === "tab=nurseries/croplist" && <NurseryCropList />}
+          {tab === "nurseries" && <DashTotalNursery />}
+          {tab === "addnurseries" && <AddNurseryForm />}
 
           {tab === "manuresbyuser" && <DashManure />}
+          {tab === "nurseriesbyuser" && <DashNursery />}
+
           {tab === "totalmanures" && <DashTotalManure />}
           {tab === "totalcrops" && <DashCrops />}
           {tab === "totalsoils" && <DashSoils />}

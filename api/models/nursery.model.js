@@ -4,8 +4,9 @@ import mongoose, { Schema, model } from "mongoose";
 const nurserySchema = new Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
-    unique: true,
+    // unique: true,  
   },
   name: {
     type: String,

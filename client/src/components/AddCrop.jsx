@@ -10,6 +10,7 @@ import {
 import { useLocation } from "react-router-dom";
 
 import { app } from "../firebase";
+import { toast } from "react-toastify";
 
 const AddCrop = ({ crop }) => {
   const [formData, setFormData] = useState({
@@ -95,6 +96,7 @@ const AddCrop = ({ crop }) => {
         setImageFile(null);
         e.target.reset();
         navigate("/dashboard?tab=totalcrops");
+        toast.success(`Crop ${crop ? "updated" : "added"} successfully`);
       }
     } catch (error) {
       console.log("Error submitting form:", error);

@@ -1,48 +1,39 @@
-import React, { useState, useEffect } from "react";
-import NurseryList from "./NurseryList";
+import React, { useState, useEffect, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+// import NurseryList from "./NurseryList";
 import AddNurseryForm from "./AddNurseryForm";
 import NurseryCropList from "./NurseryCropList";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { GlobalContext } from "../../context/GlobalState";
+import NurseryList from "./Nurserylist";
 
 const NurseryManagement = () => {
-  const [nurseries, setNurseries] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
+  const { nurseries, fetchNurseries } = useContext(GlobalContext);
   const [selectedNursery, setSelectedNursery] = useState(null);
   const [view, setView] = useState("list"); // 'list', 'register', 'manage'
   const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
-    const fetchNurseries = async () => {
-      try {
-        const response = await fetch("/api/nursery/get-nurseries");
-        if (!response.ok) {
-          throw new Error("Failed to fetch nurseries.");
-        }
-        const data = await response.json();
-        setNurseries(data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching nurseries:", error);
-        setLoading(false);
-      }
-    };
-
     fetchNurseries();
-  }, []);
+  }, [selectedNursery]);
 
-  const addNursery = (newNursery) => {
-    setNurseries([...nurseries, newNursery]);
-    setView("list");
-  };
-
-  const updateNursery = (id, updatedNursery) => {
-    setNurseries(nurseries.map((n) => (n.id === id ? updatedNursery : n)));
-  };
-
-  const deleteNursery = (id) => {
-    setNurseries(nurseries.filter((n) => n.id !== id));
-    setSelectedNursery(null);
+  const deleteNursery = async (id) => {
+    try {
+      const res = await fetch(`api/nursery/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        navigate("/services?tab=nurseries");
+        toast.success(
+          `Nursery ${selectedNursery} has been deleted successfully`
+        );
+      }
+      setSelectedNursery(null);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleAddCrop = (nurseryId, crop) => {
@@ -55,7 +46,7 @@ const NurseryManagement = () => {
       }
       return nursery;
     });
-    setNurseries(updatedNurseries);
+    // setNurseries(updatedNurseries);
   };
 
   // Filter nurseries for the current user
@@ -64,24 +55,26 @@ const NurseryManagement = () => {
   );
 
   return (
-    <div className="flex flex-col gap-6 p-6 bg-green-50 min-h-screen">
+    <div className="flex flex-col gap-6 p-6  min-h-screen">
       {/* Header Section */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-green-700">
           Nursery Management
         </h1>
         <div className="flex gap-4">
-          <button
-            onClick={() => setView("register")}
-            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-          >
-            Nursery Register
-          </button>
+          <Link to="/dashboard?tab=addnursery">
+            <button
+              // onClick={() => setView("register")}
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+            >
+              Nursery Register
+            </button>
+          </Link>
           <button
             onClick={() => setView("manage")}
             className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
           >
-            Manage Crops
+            Manage Your Nurseries
           </button>
         </div>
       </div>
@@ -113,7 +106,7 @@ const NurseryManagement = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {userNurseries.map((nursery) => (
                       <div
-                        key={nursery.id}
+                        key={nursery._id}
                         className="border border-gray-300 rounded-lg shadow-md p-4 hover:shadow-xl transition-shadow duration-200"
                       >
                         <h3 className="text-lg font-semibold text-green-700 mb-2">
@@ -122,15 +115,30 @@ const NurseryManagement = () => {
                         <p className="text-gray-700 mb-2">
                           <strong>Location:</strong> {nursery.place}
                         </p>
-                        <button
-                          onClick={() => {
-                            setSelectedNursery(nursery);
-                            console.log(nursery);
-                          }}
-                          className="bg-green-600 text-white text-sm font-medium px-4 py-2 rounded hover:bg-green-700 transition-colors duration-200"
-                        >
-                          Manage Crops
-                        </button>
+                        <div className="flex gap-4 mt-4">
+                          <button
+                            onClick={() => {
+                              setSelectedNursery(nursery);
+                              // navigate("/services?tab=nurseries");
+                              console.log(nursery);
+                            }}
+                            className="bg-green-600 text-white text-sm font-medium px-4 py-2 rounded hover:bg-green-700 transition-colors duration-200"
+                          >
+                            Manage Crops
+                          </button>
+                          <button
+                            onClick={() => {
+                              // Add delete functionality here
+                              // setSelectedNursery(nursery);
+                              deleteNursery(nursery._id);
+                              navigate("/services?tab=nurseries");
+                              console.log(`Deleting nursery: ${nursery.name}`);
+                            }}
+                            className="bg-red-600 text-white text-sm font-medium px-4 py-2 rounded hover:bg-red-700 transition-colors duration-200"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>

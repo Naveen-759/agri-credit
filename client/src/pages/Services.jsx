@@ -9,6 +9,7 @@ import YardIcon from "@mui/icons-material/Yard";
 
 import NurseryManagement from "../components/Nursery/NurseryManagement";
 import TractorManagement from "../components/tractor/TractorManagement";
+import NurseryCropList from "../components/Nursery/NurseryCropList";
 // import { Tractor } from "";
 
 const Services = () => {
@@ -28,7 +29,8 @@ const Services = () => {
           <h1 className="text-4xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-[#4caf50] to-[#f54646]">
             Agricultural Services
           </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 content-center">
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 justify-center"> */}
+          <div className="flex flex-col sm:flex-row md:flex-row lg:flex-row xl:flex-row gap-6 justify-center items-center">
             {/* Manure Card */}
             <div className="cont4 bg-green-100 bg-opacity-60 backdrop-blur-md rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 flex flex-col items-center">
               <Link
@@ -39,7 +41,7 @@ const Services = () => {
                 <div className="container4 text-[#422006] text-xl font-bold">
                   Organic Manures
                 </div>
-                <div className="disc text-green-700 mt-2 text-center">
+                <div className="disc text-[#422006]  mt-2 text-center">
                   Manure Management feature to track, apply, and exchange
                   various types of manure for optimal crop health
                 </div>
@@ -56,9 +58,10 @@ const Services = () => {
                 <div className="container4 text-red-600 text-xl font-bold">
                   Tractor Services
                 </div>
-                <div className="disc text-green-700 mt-2 text-center">
-                  Manure Management feature to track, apply, and exchange
-                  various types of manure for optimal crop health
+                <div className="disc text-red-600 mt-2 text-center">
+                  Streamline your farming operations with our efficient tractor
+                  booking and management service, ensuring seamless access and
+                  optimal utilization of agricultural machinery.
                 </div>
               </Link>
             </div>
@@ -193,6 +196,7 @@ const Services = () => {
             {tab === "tractors" && <TractorManagement />}
 
             {tab === "nurseries" && <NurseryManagement />}
+            {tab === "croplist" && <NurseryCropList />}
           </div>
         </>
       )}

@@ -64,8 +64,8 @@ const AddSoil = ({ soil }) => {
           setAllCrops([...allCrops, newCropObj]);
           setNewCrop(""); // Clear the input field
         } else {
-          toast.warning(
-            "Crop doesn't exist in the database, add it separately."
+          toast.error(
+            "Crop doesn't exist in the database, add it separately in Add crop section."
           );
         }
       } catch (error) {
@@ -154,7 +154,7 @@ const AddSoil = ({ soil }) => {
           <button
             type="button"
             onClick={addNewCrop}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
           >
             Add Crop
           </button>

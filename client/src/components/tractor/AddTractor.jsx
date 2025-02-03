@@ -1,45 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
+import { GlobalContext } from "../../context/GlobalState";
+import { useNavigate } from "react-router-dom";
 
-const AddTractor = () => {
+const AddTractor = ({ tractor }) => {
+  console.log(tractor);
+
+  const { calculateDistance, userLatitude, userLongitude } =
+    useContext(GlobalContext);
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    tractorBrand: "",
-    modelNumber: "",
-    registrationNumber: "",
-    engineCapacity: "",
-    fuelType: "",
-    attachments: [],
+    tractorBrand: tractor ? tractor.tractorBrand : "",
+    modelNumber: tractor ? tractor.modelNumber : "",
+    registrationNumber: tractor ? tractor.registrationNumber : "",
+    engineCapacity: tractor ? tractor.engineCapacity : "",
+    fuelType: tractor ? tractor.fuelType : "",
+    tractor_long: userLongitude,
+    tractor_lat: userLatitude,
+    attachments: tractor ? [...tractor.attachments] : [],
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  const handleAttachmentsChange = (e) => {
-    const { selectedOptions } = e.target;
-    const values = Array.from(selectedOptions).map((option) => option.value);
-    setFormData({ ...formData, attachments: values });
+    console.log(formData);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData);
 
     try {
-      const response = await fetch("/api/tractors/addtractor", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        tractor ? `/api/tractors/${tractor._id}` : `api/tractors/addtractor`,
+        {
+          method: tractor ? "PUT" : "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
+      console.log(response);
 
       const data = await response.json();
+      console.log(data);
 
       if (response.ok) {
-        console.log(data);
+        toast.success(` Tractor ${tractor ? "updated" : "added"} successfully`);
 
-        toast.success("Tractor registered successfully!");
         // Optionally reset form data or navigate to another page
       } else {
         toast.error(data.message || "Failed to register tractor");
@@ -51,109 +60,77 @@ const AddTractor = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen ">
+    <div className="flex justify-center items-center min-h-screen p-4">
       <form
-        className="w-full max-w-lg bg-white rounded-lg shadow-lg p-6 space-y-4"
+        className="w-full min-w-full bg-white rounded-xl shadow-xl p-8 space-y-6"
         onSubmit={handleSubmit}
       >
-        <h2 className="text-2xl font-semibold text-center text-green-700">
-          Tractor Registration
-        </h2>
-
-        {/* Tractor Brand */}
-        <div className="form-group">
-          <label
-            htmlFor="tractorBrand"
-            className="block text-sm font-medium text-gray-700"
+        {/* Form Header */}
+        <div className="flex flex-row items-center content-between  gap-4">
+          <h2 className="text-1xl md:text-3xl font-bold text-center text-green-700">
+            🚜 Tractor Registration
+          </h2>
+          <button
+            type="button"
+            onClick={() =>
+              tractor ? navigate(0) : navigate("/services?tab=tractors")
+            }
+            className="hidden sm:block bg-gradient-to-r from-gray-500 to-gray-600 
+             hover:from-gray-600 hover:to-gray-700 text-white 
+             font-semibold text-lg py-2 px-4 rounded-full 
+             shadow-lg transition-all duration-300 w-auto"
           >
-            Tractor Brand
-          </label>
-          <input
-            type="text"
-            name="tractorBrand"
-            id="tractorBrand"
-            value={formData.tractorBrand}
-            onChange={handleChange}
-            placeholder="Enter tractor brand"
-            className="w-full p-2 mt-1 border rounded-md focus:ring-green-500 focus:border-green-500"
-            required
-          />
+            Go Back
+          </button>
         </div>
 
-        {/* Model Number */}
-        <div className="form-group">
-          <label
-            htmlFor="modelNumber"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Model Number
-          </label>
-          <input
-            type="text"
-            name="modelNumber"
-            id="modelNumber"
-            value={formData.modelNumber}
-            onChange={handleChange}
-            placeholder="Enter model number"
-            className="w-full p-2 mt-1 border rounded-md focus:ring-green-500 focus:border-green-500"
-            required
-          />
-        </div>
+        {/* Input Fields */}
+        {[
+          {
+            label: "Tractor Brand",
+            name: "tractorBrand",
+            type: "text",
+          },
+          { label: "Model Number", name: "modelNumber", type: "text" },
+          {
+            label: "Registration Number",
+            name: "registrationNumber",
+            type: "text",
+          },
+          {
+            label: "Engine Capacity (HP)",
+            name: "engineCapacity",
+            type: "number",
+          },
+        ].map(({ label, name, type }) => (
+          <div key={name}>
+            <label className="block text-sm font-medium text-gray-700">
+              {label}
+            </label>
+            {console.log(formData)}
 
-        {/* Registration Number */}
-        <div className="form-group">
-          <label
-            htmlFor="registrationNumber"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Registration Number
-          </label>
-          <input
-            type="text"
-            name="registrationNumber"
-            id="registrationNumber"
-            value={formData.registrationNumber}
-            onChange={handleChange}
-            placeholder="Enter registration number"
-            className="w-full p-2 mt-1 border rounded-md focus:ring-green-500 focus:border-green-500"
-            required
-          />
-        </div>
-
-        {/* Engine Capacity */}
-        <div className="form-group">
-          <label
-            htmlFor="engineCapacity"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Engine Capacity (HP)
-          </label>
-          <input
-            type="number"
-            name="engineCapacity"
-            id="engineCapacity"
-            value={formData.engineCapacity}
-            onChange={handleChange}
-            placeholder="Enter engine capacity"
-            className="w-full p-2 mt-1 border rounded-md focus:ring-green-500 focus:border-green-500"
-            required
-          />
-        </div>
+            <input
+              type={type}
+              name={name}
+              value={formData[name]}
+              onChange={handleChange}
+              placeholder={`Enter ${label.toLowerCase()}`}
+              className="w-full p-3 mt-2 border rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
+              required
+            />
+          </div>
+        ))}
 
         {/* Fuel Type */}
-        <div className="form-group">
-          <label
-            htmlFor="fuelType"
-            className="block text-sm font-medium text-gray-700"
-          >
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
             Fuel Type
           </label>
           <select
             name="fuelType"
-            id="fuelType"
             value={formData.fuelType}
             onChange={handleChange}
-            className="w-full p-2 mt-1 border rounded-md focus:ring-green-500 focus:border-green-500"
+            className="w-full p-3 mt-2 border rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
             required
           >
             <option value="" disabled>
@@ -164,59 +141,47 @@ const AddTractor = () => {
           </select>
         </div>
 
-        {/* Attachments Available */}
-        <div className="form-group">
-          <label
-            htmlFor="attachments"
-            className="block text-sm font-medium text-gray-700"
-          >
+        {/* Attachments */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
             Attachments Available
           </label>
-          <div id="attachments" className="space-y-2 mt-1">
+          <div className="mt-2 space-y-2">
             {["Plough", "Harrow", "Rotavator", "Cultivator"].map(
               (attachment) => (
                 <div key={attachment} className="flex items-center">
                   <input
                     type="checkbox"
                     id={attachment}
-                    name="attachments"
                     value={attachment}
                     onChange={(e) => {
                       const { checked, value } = e.target;
-                      setFormData((prevFormData) => ({
-                        ...prevFormData,
+                      setFormData((prev) => ({
+                        ...prev,
                         attachments: checked
-                          ? [...prevFormData.attachments, value]
-                          : prevFormData.attachments.filter(
-                              (item) => item !== value
-                            ),
+                          ? [...prev.attachments, value]
+                          : prev.attachments.filter((item) => item !== value),
                       }));
                     }}
                     checked={formData.attachments.includes(attachment)}
-                    className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                    className="h-5 w-5 text-green-600 border-gray-300 rounded"
                   />
-                  <label
-                    htmlFor={attachment}
-                    className="ml-2 block text-sm text-gray-700"
-                  >
+                  <label htmlFor={attachment} className="ml-3 text-sm">
                     {attachment}
                   </label>
                 </div>
               )
             )}
           </div>
-          <p className="text-xs text-gray-500 mt-1">
-            Select all applicable attachments.
-          </p>
         </div>
 
-        {/* Submit Button */}
-        <div className="form-group">
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <button
             type="submit"
-            className="w-full p-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:ring focus:ring-green-300"
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-300 w-full sm:w-auto"
           >
-            Register Tractor
+            {tractor ? "🚜 Update Tractor" : "🚜 Register Tractor"}
           </button>
         </div>
       </form>

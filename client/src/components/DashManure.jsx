@@ -79,7 +79,10 @@ const DashManure = () => {
                   </button>
                   <button
                     className="px-4 py-2 bg-red-500 text-white rounded"
-                    onClick={() => handleDelete(selectedManure._id)}
+                    onClick={async () => {
+                      await handleDelete(selectedManure._id);
+                      navigate(-1);
+                    }}
                   >
                     Remove
                   </button>

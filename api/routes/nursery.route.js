@@ -3,32 +3,30 @@ import {
   createNursery,
   getAllNurseries,
   getNurseryById,
+  getNurseriesByUser,
   updateNursery,
   deleteNursery,
   addNurseryCrop,
   getCropsByNursery,
+  updateCrop,
+  deleteCrop,
 } from "../controllers/nursery.controller.js";
 import { verifyToken } from "../utils/verifyUser.js";
 
 const router = express.Router();
 
-// Route to create a new nursery
 router.post("/add-nursery", createNursery);
 
-// Route to get all nurseries
 router.get("/get-nurseries", getAllNurseries);
+router.get("/nurseriesbyuser/:userId", getNurseriesByUser);
 
-// Route to get a specific nursery by ID
-router.get("/:id", getNurseryById);
-
-// Route to update a nursery by ID
-router.put("/:id", updateNursery);
-
-// Route to delete a nursery by ID
-router.delete("/:id", deleteNursery);
-
+router
+  .get("/:id", getNurseryById)
+  .put("/:id", updateNursery)
+  .delete("/:nurseryId", deleteNursery);
 router.post("/add-crop", verifyToken, addNurseryCrop);
-
+router.put("/crop-update/:cropId", updateCrop);
+router.delete("/crop-delete/:cropId", deleteCrop);
 router.get("/cropbynursery/:nurseryId", getCropsByNursery);
 
 export default router;

@@ -10,6 +10,10 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     required: true,
   }, // "Tractor" or "Manure"
+  itemSnapshot: {
+    type: Object, // Store a snapshot of item details
+    required: false,
+  },
   requesterId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
