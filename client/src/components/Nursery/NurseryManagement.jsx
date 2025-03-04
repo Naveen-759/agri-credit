@@ -3,11 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 import AddNurseryForm from "./AddNurseryForm";
 import NurseryCropList from "./NurseryCropList";
+import NurseryList from "./Nurserylist";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { GlobalContext } from "../../context/GlobalState";
-import NurseryList from "./Nurserylist";
-
 const NurseryManagement = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
