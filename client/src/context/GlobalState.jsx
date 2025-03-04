@@ -349,7 +349,7 @@ const GlobalProvider = ({ children }) => {
         selectedManure,
         setMannure,
         getAllFertilizers,
-        getCurrentLocation,
+        // getCurrentLocation,
         getAllSoils,
         getAllCrops,
         getAllPesticides,
