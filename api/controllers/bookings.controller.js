@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import Booking from "../models/bookings.model.js";
 import Manure from "../models/organicManure.model.js";
 import NurseryCrop from "../models/nurseryCrop.model.js";
+import sendEmail from "../utils/email.js";
+import User from "../models/user.model.js";
 
 export const newBooking = async (req, res) => {
   const { itemId, itemType, requesterId, providerId, quantity } = req.body;
@@ -17,6 +19,14 @@ export const newBooking = async (req, res) => {
       providerId,
       requested_quantity: +quantity,
     });
+    const mesgObj = {
+      intro: "One booking is awaited!!",
+      instructions: "Please take the necessary action.",
+      buttonText: "Click here",
+      buttonLink: "http://localhost:5173/dashboard?tab=myactivities",
+    };
+    const user = await User.findById(providerId);
+    await sendEmail(user, mesgObj, "accept");
     res.json(booking);
   } catch (error) {
     console.log(error);
@@ -96,12 +106,7 @@ const updateItemByBooking = async (booking) => {
 
     // Ensure new quantity does not exceed available quantity
     const newQuantity = booking.requested_quantity; // Ensure new_quantity is from booking
-    // if (newQuantity > item.quantity) {
-    //   console.log("Insufficient quantity available");
-    //   return { error: "Insufficient quantity available" };
-    // }
 
-    // Update the quantity
     let updatedItem;
     if (booking.itemType === "OrganicManure") {
       updatedItem = await Manure.findByIdAndUpdate(

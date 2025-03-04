@@ -20,6 +20,7 @@ function OrganicManure() {
     userLongitude,
     manureAdminList,
     getAllManures,
+    sendNotification,
   } = useContext(GlobalContext);
   const [viewType, setViewType] = useState(true);
   const [btn, setBtn] = useState("search");
@@ -155,8 +156,10 @@ function OrganicManure() {
       });
 
       const responseData = await res.json(); // Read server response
+      console.log(responseData);
 
       if (res.ok) {
+        // await sendNotification(booking.requesterId, "pending", responseData);
         toast.success(
           `Request sent to the provider of ${selectedManure.manure_type}. Check the status in the "My Activities" section in the dashboard.`
         );

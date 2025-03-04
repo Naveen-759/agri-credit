@@ -36,6 +36,7 @@ const GlobalProvider = ({ children }) => {
     getTractors();
     fetchNurseries();
     fetchNuseriesByUser();
+    // sendNotification();
   }, []);
 
   const getCurrentLocation = async () => {
@@ -241,8 +242,10 @@ const GlobalProvider = ({ children }) => {
       if (res.ok) {
         setBookingsList(booking);
         console.log(
-          `[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] Bookings fetched successfully:`,
-          booking
+          `[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] ${
+            booking.length
+          } Bookings fetched successfully:`
+          // booking
         ); // Log fetched data directly
       }
     } catch (error) {
@@ -270,6 +273,35 @@ const GlobalProvider = ({ children }) => {
     } catch (error) {
       console.error("Error fetching nurseries:", error);
       // setLoading(false);
+    }
+  };
+
+  const sendNotification = async (requesterId, status, booking) => {
+    const message = `Your booking request has been ${status} for ${booking.itemType}.`;
+
+    const notification = {
+      userId: requesterId,
+      message,
+      type: status === "accepted" ? "success" : "error",
+    };
+
+    try {
+      const response = await fetch("/api/notifications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(notification),
+      });
+
+      if (response.ok) {
+        toast.success(`Notification sent to requester: ${status}`);
+      } else {
+        toast.error("Failed to send notification");
+      }
+    } catch (error) {
+      toast.error("Failed to send notification");
+      console.log("Error sending notification:", error);
     }
   };
 
@@ -329,6 +361,7 @@ const GlobalProvider = ({ children }) => {
         getAllManures,
         bookingsList,
         getBookingsByUser,
+        sendNotification,
       }}
     >
       {children}

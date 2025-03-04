@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toggleTheme } from "../redux/theme/themeSlice";
 import { signoutSuccess } from "../redux/user/userSlice";
+import NotificationBell from "./NotificationBell";
 
 export default function Header() {
   const path = useLocation().pathname;
@@ -45,55 +46,40 @@ export default function Header() {
       </Link>
 
       <div className="flex gap-5 items-center md:order-3">
-        {/* Create post icon */}
-        {/* {currentUser?.isAdmin && (
-          <Link to="/create-post">
-            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-700 cursor-pointer transition-transform transform hover:scale-105 hover:bg-green-100 dark:hover:bg-green-600 shadow-md">
-              <GoPlus
-                style={{ fontSize: "2rem", fontWeight: "bold" }}
-                className="text-green-800 dark:text-gray-200"
-              />
-            </div>
-          </Link>
-        )} */}
-
-        {/* Theme: dark or light */}
-        {/* <div
-          className="w-10 h-10 flex items-center justify-center p-2 rounded-full bg-green-100 dark:bg-green-700 cursor-pointer transition-transform transform hover:scale-105 hover:bg-green-100 dark:hover:bg-green-600 shadow-md"
-          onClick={() => dispatch(toggleTheme())}
-        >
-          {theme === "light" ? (
-            <LuSun className="text-3xl text-gray-800 dark:text-yellow-400" />
-          ) : (
-            <LuMoon className="text-3xl text-gray-800 dark:text-blue-400" />
-          )}
-        </div> */}
-
-        {/* Dropdown Navbar */}
         {currentUser ? (
-          <Dropdown
-            arrowIcon={false}
-            inline
-            label={
-              <div className="flex gap-3 justify-center items-center">
-                <Avatar alt="user" img={currentUser.profilePicture} rounded />
-                <h1>{currentUser.username}</h1>
+          <div className="flex items-center gap-6">
+            {/* Notification Bell */}
+            <Link to="/bookings">
+              <div className="relative cursor-pointer">
+                <NotificationBell />
               </div>
-            }
-          >
-            <Dropdown.Header>
-              <span className="block text-sm">@{currentUser.username}</span>
-              <span className="block text-sm font-medium truncate">
-                {currentUser.email}
-              </span>
-            </Dropdown.Header>
-
-            <Link to="/dashboard?tab=profile">
-              <Dropdown.Item>Profile</Dropdown.Item>
             </Link>
-            <Dropdown.Divider />
-            <Dropdown.Item onClick={handleSignout}>Sign out</Dropdown.Item>
-          </Dropdown>
+
+            {/* User Dropdown */}
+            <Dropdown
+              arrowIcon={false}
+              inline
+              label={
+                <div className="flex gap-3 justify-center items-center">
+                  <Avatar alt="user" img={currentUser.profilePicture} rounded />
+                  <h1>{currentUser.username}</h1>
+                </div>
+              }
+            >
+              <Dropdown.Header>
+                <span className="block text-sm">@{currentUser.username}</span>
+                <span className="block text-sm font-medium truncate">
+                  {currentUser.email}
+                </span>
+              </Dropdown.Header>
+
+              <Link to="/dashboard?tab=profile">
+                <Dropdown.Item>Profile</Dropdown.Item>
+              </Link>
+              <Dropdown.Divider />
+              <Dropdown.Item onClick={handleSignout}>Sign out</Dropdown.Item>
+            </Dropdown>
+          </div>
         ) : (
           <Link to="/sign-in">
             <Button
@@ -105,6 +91,7 @@ export default function Header() {
             </Button>
           </Link>
         )}
+
         <Navbar.Toggle />
       </div>
 

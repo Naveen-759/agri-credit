@@ -16,7 +16,7 @@ const TractorManagement = ({ userId }) => {
   const [acres, setAcres] = useState(0);
   const [cost, setCost] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
-  const { calculateDistance, userLatitude, userLongitude } =
+  const { calculateDistance, userLatitude, userLongitude, sendNotification } =
     useContext(GlobalContext);
 
   const attachmentCostsPerAcre = {
@@ -76,6 +76,7 @@ const TractorManagement = ({ userId }) => {
       console.log(res);
 
       if (res.ok) {
+        await sendNotification(booking.requesterId._id, "pending", booking);
         toast.success(
           `Check your bookings for status at "My Activities in Dashboard"`
         );

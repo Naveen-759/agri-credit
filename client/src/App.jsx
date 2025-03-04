@@ -17,6 +17,7 @@ import AgriHelp from "./pages/AgriHelp";
 import Services from "./pages/Services";
 import AdminPage from "./pages/AdminPage";
 import OtpVerification from "./pages/OtpVerification";
+import MyActivities from "./components/MyActivities";
 
 // import { GlobalContext } from "./context/GlobalState";
 
@@ -50,6 +51,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/services" element={<Services />} />
         </Route>
+        <Route path="/bookings" element={<MyActivities />} />
 
         {/* <Route element={<PrivateRoute />}>
         </Route> */}

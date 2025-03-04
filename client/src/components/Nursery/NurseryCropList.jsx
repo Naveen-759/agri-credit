@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import NurseryAddCropForm from "./NurseryAddCropForm";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "../../context/GlobalState";
 
 const NurseryCropList = ({ nursery }) => {
   const { currentUser, error } = useSelector((state) => state.user);
@@ -11,6 +12,7 @@ const NurseryCropList = ({ nursery }) => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState(false);
   const [newQuantity, setNewQuantity] = useState();
+  const { sendNotification } = useContext(GlobalContext);
 
   const [selectedCrop, setSelectedCrop] = useState(null);
   const navigate = useNavigate();
@@ -61,6 +63,7 @@ const NurseryCropList = ({ nursery }) => {
       const responseData = await res.json(); // Read server response
 
       if (res.ok) {
+        // await sendNotification(booking.requesterId._id, "pending", res);
         toast.success(
           `Request sent to the provider of ${selectedCrop.name}. Check the status in the "My Activities" section in the dashboard.`
         );

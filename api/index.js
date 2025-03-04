@@ -13,11 +13,13 @@ import pesticideRoutes from "./routes/pesticide.route.js";
 import bookingRoutes from "./routes/booking-route.js";
 import tractorRoutes from "./routes/tractor.route.js";
 import nurseryRoutes from "./routes/nursery.route.js";
+import notificationRoutes from "./routes/notification-route.js";
 
 import cookieParser from "cookie-parser";
 import path from "path";
 
 import cors from "cors";
+import emailController from "./emailController.js";
 
 dotenv.config();
 mongoose
@@ -59,9 +61,11 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/soils", soilRoutes);
 app.use("/api/tractors", tractorRoutes);
 app.use("/api/nursery", nurseryRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use(express.static(path.join(__dirname, "/client/dist")));
 
+app.get("/email", emailController);
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
 });

@@ -23,6 +23,7 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.446.0",
+    "mailgen": "^2.0.29",
     "mongoose": "^8.8.3",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.15",
