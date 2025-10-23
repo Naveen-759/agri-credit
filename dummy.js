@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Sidebar } from "flowbite-react";
-// import { HiUser } from "react-icons/hi";
-// import { FaUserAlt } from "react-icons/fa";
+
 import { CiLogout } from "react-icons/ci";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signoutSuccess } from "../redux/user/userSlice";
-import { IoDocumentText } from "react-icons/io5";
 import { HiAnnotation, HiChartPie } from "react-icons/hi";
 import { FaUser, FaSeedling } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa";
